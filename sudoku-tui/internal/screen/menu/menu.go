@@ -219,7 +219,7 @@ func (m *Model) renderDiffModal() string {
 	}
 
 	lines = append(lines, sep)
-	desc := th.Diff.Desc.Render(th.Diff.DescIcon.Render("i") + " " + diffItems[m.diffCursor].desc)
+	desc := th.Diff.Desc.Width(35).Render(th.Diff.DescIcon.Render("i") + " " + diffItems[m.diffCursor].desc)
 	lines = append(lines, desc)
 	lines = append(lines, "")
 	hints := th.Footer.KeyHint.Render("k") + " UP  " + th.Footer.KeyHint.Render("j") + " DOWN  " +
