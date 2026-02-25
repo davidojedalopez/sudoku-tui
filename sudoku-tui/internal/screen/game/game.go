@@ -334,7 +334,7 @@ func (m *Model) renderSidebar() string {
 		digitBtn = th.Sidebar.ModeIndicatorInactive.Render("  DIGIT")
 		noteBtn = th.Sidebar.ModeIndicatorActive.Render("● NOTE ")
 	}
-	sb.WriteString(digitBtn + " " + noteBtn + "\n")
+	sb.WriteString(lipgloss.JoinHorizontal(lipgloss.Center, digitBtn, " ", noteBtn) + "\n")
 	sb.WriteString("\n")
 
 	remaining := m.board.RemainingCounts()
