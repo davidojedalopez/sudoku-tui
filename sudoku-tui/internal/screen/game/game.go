@@ -76,6 +76,9 @@ func New(puzzle, solution, difficulty, puzzleID string, th *theme.Theme) *Model 
 	return m
 }
 
+// SetTheme updates the theme on the game screen.
+func (m *Model) SetTheme(th *theme.Theme) { m.theme = th }
+
 // Init starts the timer and returns the first tick command.
 func (m *Model) Init() tea.Cmd {
 	return m.timer.start()

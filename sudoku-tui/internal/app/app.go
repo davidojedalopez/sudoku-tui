@@ -86,6 +86,21 @@ func (a *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		a.screen = msgs.ScreenMenu
 		return a, a.menu.Init()
+
+	case msgs.ChangeThemeMsg:
+		th, ok := theme.Registry[msg.ThemeName]
+		if !ok {
+			return a, nil
+		}
+		a.theme = th
+		a.menu.SetTheme(th)
+		a.history.SetTheme(th)
+		a.library.SetTheme(th)
+		if a.game != nil {
+			a.game.SetTheme(th)
+		}
+		go theme.Save(msg.ThemeName) //nolint:errcheck
+		return a, func() tea.Msg { return tea.WindowSizeMsg{Width: a.width, Height: a.height} }
 	}
 
 	return a, a.forwardToActive(msg)

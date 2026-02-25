@@ -18,6 +18,21 @@ type paletteOverride struct {
 	Palette map[string]string `json:"palette"`
 }
 
+// Save persists the selected theme name to the config file.
+func Save(themeName string) error {
+	cfgDir := filepath.Join(os.Getenv("HOME"), ".config", "sudoku-tui")
+	if err := os.MkdirAll(cfgDir, 0755); err != nil {
+		return err
+	}
+	cfgPath := filepath.Join(cfgDir, "theme.json")
+	cfg := themeConfig{Base: themeName}
+	data, err := json.MarshalIndent(cfg, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(cfgPath, data, 0644)
+}
+
 // Load loads the active theme, applying any user overrides.
 func Load() *Theme {
 	cfgPath := filepath.Join(os.Getenv("HOME"), ".config", "sudoku-tui", "theme.json")

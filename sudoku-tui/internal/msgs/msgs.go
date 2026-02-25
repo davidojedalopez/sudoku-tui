@@ -33,3 +33,8 @@ type GameOverMsg struct {
 	Elapsed int64
 	Diff    string
 }
+
+// ChangeThemeMsg is sent when the user selects a new theme.
+type ChangeThemeMsg struct {
+	ThemeName string
+}

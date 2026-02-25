@@ -35,23 +35,59 @@ var menuLabels = []menuLabel{
 	{"New Game"},
 	{"Puzzle Library"},
 	{"History"},
+	{"Themes"},
 	{"Quit"},
+}
+
+// themeItem represents a selectable theme.
+type themeItem struct {
+	key   string
+	label string
+}
+
+var themeItems = []themeItem{
+	{"modern-charm", "Modern Charm"},
+	{"zen-monolith", "Zen Monolith"},
+	{"retro-phosphor", "Retro Phosphor"},
+	{"matrix", "Matrix"},
 }
 
 // Model is the main menu screen.
 type Model struct {
-	cursor     int
-	width      int
-	height     int
-	showDiff   bool
-	diffCursor int
-	theme      *theme.Theme
-	generating bool
+	cursor      int
+	width       int
+	height      int
+	showDiff    bool
+	diffCursor  int
+	showTheme   bool
+	themeCursor int
+	activeTheme string
+	theme       *theme.Theme
+	generating  bool
 }
 
 // New creates a new menu model.
 func New(th *theme.Theme) *Model {
-	return &Model{theme: th}
+	themeCursor := 0
+	for i, item := range themeItems {
+		if item.key == th.Name {
+			themeCursor = i
+			break
+		}
+	}
+	return &Model{theme: th, activeTheme: th.Name, themeCursor: themeCursor}
+}
+
+// SetTheme updates the theme on the menu model.
+func (m *Model) SetTheme(th *theme.Theme) {
+	m.theme = th
+	m.activeTheme = th.Name
+	for i, item := range themeItems {
+		if item.key == th.Name {
+			m.themeCursor = i
+			break
+		}
+	}
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -70,6 +106,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		if m.showDiff {
 			return m, m.handleDiffKey(msg)
+		}
+		if m.showTheme {
+			return m, m.handleThemeKey(msg)
 		}
 		return m, m.handleMenuKey(msg)
 
@@ -107,7 +146,10 @@ func (m *Model) activateItem(idx int) tea.Cmd {
 		return func() tea.Msg { return msgs.NavigateMsg{To: msgs.ScreenLibrary} }
 	case 2: // History
 		return func() tea.Msg { return msgs.NavigateMsg{To: msgs.ScreenHistory} }
-	case 3: // Quit
+	case 3: // Themes
+		m.showTheme = true
+		return nil
+	case 4: // Quit
 		return tea.Quit
 	}
 	return nil
@@ -134,6 +176,26 @@ func (m *Model) handleDiffKey(msg tea.KeyMsg) tea.Cmd {
 		return func() tea.Msg { return generateMsg{diff: diff} }
 	case "esc":
 		m.showDiff = false
+	}
+	return nil
+}
+
+func (m *Model) handleThemeKey(msg tea.KeyMsg) tea.Cmd {
+	switch msg.String() {
+	case "up", "k":
+		if m.themeCursor > 0 {
+			m.themeCursor--
+		}
+	case "down", "j":
+		if m.themeCursor < len(themeItems)-1 {
+			m.themeCursor++
+		}
+	case "enter", " ":
+		selected := themeItems[m.themeCursor].key
+		m.showTheme = false
+		return func() tea.Msg { return msgs.ChangeThemeMsg{ThemeName: selected} }
+	case "esc":
+		m.showTheme = false
 	}
 	return nil
 }
@@ -189,6 +251,11 @@ func (m *Model) View() string {
 		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, modal)
 	}
 
+	if m.showTheme {
+		modal := m.renderThemeModal()
+		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, modal)
+	}
+
 	return result
 }
 
@@ -222,6 +289,40 @@ func (m *Model) renderDiffModal() string {
 	desc := th.Diff.Desc.Width(35).Render(th.Diff.DescIcon.Render("i") + " " + diffItems[m.diffCursor].desc)
 	lines = append(lines, desc)
 	lines = append(lines, "")
+	hints := th.Footer.KeyHint.Render("k") + " UP  " + th.Footer.KeyHint.Render("j") + " DOWN  " +
+		th.Footer.KeyHint.Render("Esc") + " BACK  " + th.Footer.KeyHint.Render("Enter") + " SELECT"
+	lines = append(lines, hints)
+
+	content := strings.Join(lines, "\n")
+	return th.Diff.ModalBorder.Padding(1, 2).Render(content)
+}
+
+func (m *Model) renderThemeModal() string {
+	th := m.theme
+	title := th.Diff.Title.Render("[ SELECT THEME ]")
+	sep := strings.Repeat("─", 30)
+
+	var lines []string
+	lines = append(lines, title)
+	lines = append(lines, sep)
+	lines = append(lines, "")
+
+	for i, t := range themeItems {
+		label := t.label
+		if t.key == m.activeTheme {
+			label += " ✓"
+		}
+		var rendered string
+		if i == m.themeCursor {
+			rendered = th.Diff.Active.Render("▶ " + label)
+		} else {
+			rendered = th.Diff.Option.Render("  " + label)
+		}
+		lines = append(lines, rendered)
+		lines = append(lines, "")
+	}
+
+	lines = append(lines, sep)
 	hints := th.Footer.KeyHint.Render("k") + " UP  " + th.Footer.KeyHint.Render("j") + " DOWN  " +
 		th.Footer.KeyHint.Render("Esc") + " BACK  " + th.Footer.KeyHint.Render("Enter") + " SELECT"
 	lines = append(lines, hints)
