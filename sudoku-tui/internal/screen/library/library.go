@@ -135,13 +135,19 @@ func (m *Model) View() string {
 
 	header := th.Header.Bar.Width(m.width).Render(" " + th.Header.Title.Render("PUZZLE LIBRARY"))
 
-	listWidth := (m.width - 6) * 60 / 100
-	if listWidth < 20 {
-		listWidth = 20
+	// Overhead: 2 (list border) + 2 ("  " separator) + 2 (detail border) = 6
+	// No body indent – panels extend to the screen edges.
+	available := m.width - 6
+	if available < 1 {
+		available = 1
 	}
-	detailWidth := m.width - listWidth - 6
-	if detailWidth < 20 {
-		detailWidth = 20
+	detailWidth := available * 40 / 100
+	if detailWidth < 27 { // board preview is 25 chars wide; need at least 27
+		detailWidth = 27
+	}
+	listWidth := available - detailWidth
+	if listWidth < 15 {
+		listWidth = 15
 	}
 
 	list := m.renderList(filtered, listWidth)
@@ -159,7 +165,7 @@ func (m *Model) View() string {
 	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
 
 	bodyHeight := m.height - 2 - lipgloss.Height(footer)
-	body := lipgloss.NewStyle().Height(bodyHeight).Render("  " + panels)
+	body := lipgloss.NewStyle().Height(bodyHeight).Render(panels)
 
 	return lipgloss.JoinVertical(lipgloss.Left, header, body, footer)
 }
@@ -229,7 +235,7 @@ func (m *Model) renderPreview(givens string) string {
 		return ""
 	}
 	var rows []string
-	rows = append(rows, "+---------+---------+---------+")
+	rows = append(rows, "+-------+-------+-------+")
 	for r := 0; r < 9; r++ {
 		var sb strings.Builder
 		sb.WriteString("| ")
@@ -249,10 +255,10 @@ func (m *Model) renderPreview(givens string) string {
 		sb.WriteString(" |")
 		rows = append(rows, sb.String())
 		if r == 2 || r == 5 {
-			rows = append(rows, "+---------+---------+---------+")
+			rows = append(rows, "+-------+-------+-------+")
 		}
 	}
-	rows = append(rows, "+---------+---------+---------+")
+	rows = append(rows, "+-------+-------+-------+")
 	return strings.Join(rows, "\n")
 }
 
