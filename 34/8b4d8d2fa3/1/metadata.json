@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.7",
+  "checkpoint_id": "348b4d8d2fa3",
+  "session_id": "eafaa42c-5697-40f2-9887-1963e88f5389",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-25T22:32:29.961795Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "sudoku-tui/internal/app/app.go",
+    "sudoku-tui/internal/msgs/msgs.go",
+    "sudoku-tui/internal/screen/game/game.go",
+    "sudoku-tui/internal/screen/game/timer.go",
+    "sudoku-tui/internal/screen/menu/menu.go",
+    "sudoku-tui/internal/session/session.go"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "5a8dae1fa345",
+  "token_usage": {
+    "input_tokens": 32,
+    "cache_creation_tokens": 172884,
+    "cache_read_tokens": 2265749,
+    "output_tokens": 4790,
+    "api_call_count": 28
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-25T22:32:29.898181Z",
+    "agent_lines": 254,
+    "human_added": 4,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 259,
+    "agent_percentage": 98.06949806949807
+  }
+}
