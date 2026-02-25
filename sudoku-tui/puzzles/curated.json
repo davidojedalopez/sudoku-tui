@@ -1,0 +1,66 @@
+[
+  {
+    "id": "classic_001",
+    "name": "Classic Beginner",
+    "difficulty": "easy",
+    "author": "curator",
+    "description": "A gentle introduction. Solvable with naked singles only.",
+    "givens": "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+  },
+  {
+    "id": "classic_002",
+    "name": "Morning Warm-up",
+    "difficulty": "easy",
+    "author": "curator",
+    "description": "Perfect for your morning coffee. Easy naked singles throughout.",
+    "givens": "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
+  },
+  {
+    "id": "medium_001",
+    "name": "Pointing Pairs",
+    "difficulty": "medium",
+    "author": "curator",
+    "description": "Requires naked pairs and pointing pairs. Good daily practice.",
+    "givens": "200080300060070084030500209000105408000000000402706000301007040720040060004010003"
+  },
+  {
+    "id": "medium_002",
+    "name": "Hidden Pairs",
+    "difficulty": "medium",
+    "author": "curator",
+    "description": "Hidden pairs technique required. A satisfying solve.",
+    "givens": "000000907000420180000705026100904000050000040000507009920108000034059000507000000"
+  },
+  {
+    "id": "hard_001",
+    "name": "monolith_001",
+    "difficulty": "hard",
+    "author": "curator",
+    "description": "A classic symmetrical puzzle requiring advanced techniques to crack.",
+    "givens": "800000000003600000070090200060005030004020070030100006000300005001060400500000000"
+  },
+  {
+    "id": "hard_002",
+    "name": "xwing_practice",
+    "difficulty": "hard",
+    "author": "curator",
+    "description": "Specifically designed to practice X-Wing detection.",
+    "givens": "100007090030020008009600500005300900010080002600004000300000010040000007007000300"
+  },
+  {
+    "id": "expert_001",
+    "name": "ywing_showcase",
+    "difficulty": "expert",
+    "author": "curator",
+    "description": "Y-Wing and X-Wing required. Not for the faint-hearted.",
+    "givens": "000600400700003600000091080000000000050180003000306045300010900001400000008000150"
+  },
+  {
+    "id": "expert_002",
+    "name": "swordfish_master",
+    "difficulty": "expert",
+    "author": "curator",
+    "description": "Swordfish technique required for completion. Expert challenge.",
+    "givens": "000000000010020030000040500200030001090000080400010007005060000030070090000000000"
+  }
+]
