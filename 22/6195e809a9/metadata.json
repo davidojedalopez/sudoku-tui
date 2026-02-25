@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.4.7",
+  "checkpoint_id": "226195e809a9",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "sudoku-tui/internal/app/app.go",
+    "sudoku-tui/internal/msgs/msgs.go",
+    "sudoku-tui/internal/screen/game/game.go",
+    "sudoku-tui/internal/screen/historyscreen/history.go",
+    "sudoku-tui/internal/screen/library/library.go",
+    "sudoku-tui/internal/screen/menu/menu.go",
+    "sudoku-tui/internal/theme/config.go"
+  ],
+  "sessions": [
+    {
+      "metadata": "/22/6195e809a9/0/metadata.json",
+      "transcript": "/22/6195e809a9/0/full.jsonl",
+      "context": "/22/6195e809a9/0/context.md",
+      "content_hash": "/22/6195e809a9/0/content_hash.txt",
+      "prompt": "/22/6195e809a9/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 453,
+    "cache_creation_tokens": 165708,
+    "cache_read_tokens": 1887852,
+    "output_tokens": 5648,
+    "api_call_count": 25
+  }
+}

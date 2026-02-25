@@ -1,0 +1,5 @@
+Fix @"Tasks/002 Theme selector and configs.md"
+
+---
+
+Nice, add everything to Git and commit
