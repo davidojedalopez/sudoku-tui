@@ -9,6 +9,7 @@ import (
 
 	"github.com/davidojeda/sudoku-tui/internal/board"
 	"github.com/davidojeda/sudoku-tui/internal/msgs"
+	"github.com/davidojeda/sudoku-tui/internal/session"
 	"github.com/davidojeda/sudoku-tui/internal/techniques"
 	"github.com/davidojeda/sudoku-tui/internal/theme"
 )
@@ -38,20 +39,23 @@ type toastState struct {
 
 // Model is the game screen model.
 type Model struct {
-	board       *board.Board
-	cursor      [2]int
-	inputMode   InputMode
-	undoStack   []undoEntry
-	timer       timerState
-	toast       toastState
-	celebration celebrationState
-	solved      bool
-	width       int
-	height      int
-	difficulty  string
-	puzzleID    string
-	theme       *theme.Theme
-	snap        techniques.Snapshot
+	board         *board.Board
+	cursor        [2]int
+	inputMode     InputMode
+	undoStack     []undoEntry
+	timer         timerState
+	toast         toastState
+	celebration   celebrationState
+	solved        bool
+	width         int
+	height        int
+	difficulty    string
+	puzzleID      string
+	puzzle        string
+	solution      string
+	resumeElapsed int64
+	theme         *theme.Theme
+	snap          techniques.Snapshot
 }
 
 // New creates a new game model.
@@ -69,6 +73,8 @@ func New(puzzle, solution, difficulty, puzzleID string, th *theme.Theme) *Model 
 		board:       b,
 		difficulty:  difficulty,
 		puzzleID:    puzzleID,
+		puzzle:      puzzle,
+		solution:    solution,
 		theme:       th,
 		celebration: newCelebration(th.Victory.Particle),
 	}
@@ -76,11 +82,70 @@ func New(puzzle, solution, difficulty, puzzleID string, th *theme.Theme) *Model 
 	return m
 }
 
+// NewFromSaved restores a game from a previously saved session.
+func NewFromSaved(saved *session.SavedGame, th *theme.Theme) *Model {
+	b := board.New()
+	b.LoadGivens(saved.Puzzle)
+	for i, ch := range saved.Solution {
+		if ch >= '1' && ch <= '9' {
+			b.Solution[i/9][i%9] = int(ch - '0')
+		}
+	}
+	for r := 0; r < 9; r++ {
+		for c := 0; c < 9; c++ {
+			cs := saved.Cells[r][c]
+			b.Cells[r][c].Value = cs.Value
+			b.Cells[r][c].Kind = board.CellKind(cs.Kind)
+			b.Cells[r][c].Notes = cs.Notes
+		}
+	}
+	b.UpdateConflicts()
+
+	m := &Model{
+		board:         b,
+		difficulty:    saved.Difficulty,
+		puzzleID:      saved.PuzzleID,
+		puzzle:        saved.Puzzle,
+		solution:      saved.Solution,
+		resumeElapsed: saved.Elapsed,
+		theme:         th,
+		celebration:   newCelebration(th.Victory.Particle),
+	}
+	m.snap = techniques.TakeSnapshot(b)
+	return m
+}
+
+// Snapshot captures the current game state for persistence.
+func (m *Model) Snapshot() *session.SavedGame {
+	var cells [9][9]session.CellState
+	for r := 0; r < 9; r++ {
+		for c := 0; c < 9; c++ {
+			cell := m.board.Cells[r][c]
+			cells[r][c] = session.CellState{
+				Value: cell.Value,
+				Kind:  int(cell.Kind),
+				Notes: cell.Notes,
+			}
+		}
+	}
+	return &session.SavedGame{
+		Puzzle:     m.puzzle,
+		Solution:   m.solution,
+		Difficulty: m.difficulty,
+		PuzzleID:   m.puzzleID,
+		Elapsed:    m.timer.elapsedSeconds(),
+		Cells:      cells,
+	}
+}
+
 // SetTheme updates the theme on the game screen.
 func (m *Model) SetTheme(th *theme.Theme) { m.theme = th }
 
 // Init starts the timer and returns the first tick command.
 func (m *Model) Init() tea.Cmd {
+	if m.resumeElapsed > 0 {
+		return m.timer.startAt(time.Duration(m.resumeElapsed) * time.Second)
+	}
 	return m.timer.start()
 }
 

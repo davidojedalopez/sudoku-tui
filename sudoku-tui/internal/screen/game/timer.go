@@ -29,6 +29,14 @@ func (t *timerState) start() tea.Cmd {
 	return tickCmd()
 }
 
+func (t *timerState) startAt(offset time.Duration) tea.Cmd {
+	t.elapsed = offset
+	t.startTime = time.Now()
+	t.started = true
+	t.paused = false
+	return tickCmd()
+}
+
 func (t *timerState) pause() {
 	if !t.paused && t.started {
 		t.elapsed += time.Since(t.startTime)

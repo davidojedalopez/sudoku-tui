@@ -38,3 +38,6 @@ type GameOverMsg struct {
 type ChangeThemeMsg struct {
 	ThemeName string
 }
+
+// ResumeGameMsg is sent when the user selects "Resume Game" from the menu.
+type ResumeGameMsg struct{}

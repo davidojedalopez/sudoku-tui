@@ -54,20 +54,21 @@ var themeItems = []themeItem{
 
 // Model is the main menu screen.
 type Model struct {
-	cursor      int
-	width       int
-	height      int
-	showDiff    bool
-	diffCursor  int
-	showTheme   bool
-	themeCursor int
-	activeTheme string
-	theme       *theme.Theme
-	generating  bool
+	cursor       int
+	width        int
+	height       int
+	showDiff     bool
+	diffCursor   int
+	showTheme    bool
+	themeCursor  int
+	activeTheme  string
+	theme        *theme.Theme
+	generating   bool
+	hasSavedGame bool
 }
 
 // New creates a new menu model.
-func New(th *theme.Theme) *Model {
+func New(th *theme.Theme, hasSavedGame bool) *Model {
 	themeCursor := 0
 	for i, item := range themeItems {
 		if item.key == th.Name {
@@ -75,7 +76,26 @@ func New(th *theme.Theme) *Model {
 			break
 		}
 	}
-	return &Model{theme: th, activeTheme: th.Name, themeCursor: themeCursor}
+	return &Model{theme: th, activeTheme: th.Name, themeCursor: themeCursor, hasSavedGame: hasSavedGame}
+}
+
+// SetHasSavedGame updates whether a saved game is available to resume.
+func (m *Model) SetHasSavedGame(has bool) {
+	m.hasSavedGame = has
+	if m.cursor > m.maxCursor() {
+		m.cursor = m.maxCursor()
+	}
+}
+
+func (m *Model) effectiveItems() []menuLabel {
+	if m.hasSavedGame {
+		return append([]menuLabel{{"Resume Game"}}, menuLabels...)
+	}
+	return menuLabels
+}
+
+func (m *Model) maxCursor() int {
+	return len(m.effectiveItems()) - 1
 }
 
 // SetTheme updates the theme on the menu model.
@@ -126,7 +146,7 @@ func (m *Model) handleMenuKey(msg tea.KeyMsg) tea.Cmd {
 			m.cursor--
 		}
 	case "down", "j":
-		if m.cursor < len(menuLabels)-1 {
+		if m.cursor < m.maxCursor() {
 			m.cursor++
 		}
 	case "enter", " ":
@@ -138,6 +158,12 @@ func (m *Model) handleMenuKey(msg tea.KeyMsg) tea.Cmd {
 }
 
 func (m *Model) activateItem(idx int) tea.Cmd {
+	if m.hasSavedGame {
+		if idx == 0 {
+			return func() tea.Msg { return msgs.ResumeGameMsg{} }
+		}
+		idx-- // shift to base indices
+	}
 	switch idx {
 	case 0: // New Game
 		m.showDiff = true
@@ -223,7 +249,7 @@ func (m *Model) View() string {
 	subtitle := th.Menu.Subtitle.Render(th.Strings.MenuSubtitle)
 
 	var menuLines []string
-	for i, item := range menuLabels {
+	for i, item := range m.effectiveItems() {
 		if i == m.cursor {
 			menuLines = append(menuLines, th.Menu.ItemActive.Render("▶  "+item.label))
 		} else {

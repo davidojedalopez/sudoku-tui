@@ -10,20 +10,22 @@ import (
 	"github.com/davidojeda/sudoku-tui/internal/screen/historyscreen"
 	"github.com/davidojeda/sudoku-tui/internal/screen/library"
 	"github.com/davidojeda/sudoku-tui/internal/screen/menu"
+	"github.com/davidojeda/sudoku-tui/internal/session"
 	"github.com/davidojeda/sudoku-tui/internal/theme"
 )
 
 // App is the root Bubble Tea model.
 type App struct {
-	screen  msgs.Screen
-	menu    *menu.Model
-	game    *game.Model
-	history *historyscreen.Model
-	library *library.Model
-	store   *history.Store
-	theme   *theme.Theme
-	width   int
-	height  int
+	screen    msgs.Screen
+	menu      *menu.Model
+	game      *game.Model
+	history   *historyscreen.Model
+	library   *library.Model
+	store     *history.Store
+	theme     *theme.Theme
+	savedGame *session.SavedGame
+	width     int
+	height    int
 }
 
 // New creates a new App model.
@@ -32,12 +34,15 @@ func New() (*App, error) {
 
 	store, _ := history.NewStore()
 
+	savedGame, hasSave, _ := session.Load()
+
 	a := &App{
-		screen: msgs.ScreenMenu,
-		theme:  th,
-		store:  store,
+		screen:    msgs.ScreenMenu,
+		theme:     th,
+		store:     store,
+		savedGame: savedGame,
 	}
-	a.menu = menu.New(th)
+	a.menu = menu.New(th, hasSave)
 	a.history = historyscreen.New(th, store)
 	a.library = library.New(th)
 	return a, nil
@@ -68,6 +73,9 @@ func (a *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return a, nil
 
 	case msgs.StartGameMsg:
+		go session.Clear() //nolint:errcheck
+		a.savedGame = nil
+		a.menu.SetHasSavedGame(false)
 		a.screen = msgs.ScreenGame
 		diff := msg.Difficulty.String()
 		a.game = game.New(msg.Puzzle, msg.Solution, diff, msg.PuzzleID, a.theme)
@@ -76,7 +84,28 @@ func (a *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			func() tea.Msg { return tea.WindowSizeMsg{Width: a.width, Height: a.height} },
 		)
 
+	case msgs.ResumeGameMsg:
+		if a.savedGame != nil {
+			a.screen = msgs.ScreenGame
+			a.game = game.NewFromSaved(a.savedGame, a.theme)
+			return a, tea.Batch(
+				a.game.Init(),
+				func() tea.Msg { return tea.WindowSizeMsg{Width: a.width, Height: a.height} },
+			)
+		}
+		return a, nil
+
 	case msgs.GameOverMsg:
+		if msg.Won {
+			go session.Clear() //nolint:errcheck
+			a.savedGame = nil
+			a.menu.SetHasSavedGame(false)
+		} else if a.game != nil {
+			snap := a.game.Snapshot()
+			a.savedGame = snap
+			go session.Save(snap) //nolint:errcheck
+			a.menu.SetHasSavedGame(true)
+		}
 		if a.store != nil {
 			result := history.ResultGaveUp
 			if msg.Won {
