@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Charm Sudoku - Main Menu</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F5A97F", // Peach from PRD
+                        "background-dark": "#1E1E2E", // Deep Violet from PRD
+                        "surface": "#313244", // Surface from PRD
+                        "text-main": "#CAD3F5", // Lavender from PRD
+                        "text-muted": "#9399B2", // Overlay Text from PRD
+                        "accent": "#8AADF4", // Blue from PRD
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"], // Essential for TUI feel
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 169, 127, 0.15)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar to match TUI aesthetic if needed */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E1E2E; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313244; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45475a; 
+        }
+
+        /* Scanline effect for that retro-modern terminal feel */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        
+        /* ASCII Gradient Text Utility */
+        .ascii-gradient {
+            background: linear-gradient(to right, #F5A97F, #f5bde6, #8AADF4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-text-main font-mono h-screen w-full overflow-hidden flex flex-col items-center justify-center relative selection:bg-primary selection:text-background-dark">
+<!-- Subtle background noise/pattern -->
+<div class="absolute inset-0 opacity-5 pointer-events-none z-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'#9C92AC\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+<!-- Scanline Overlay -->
+<div class="absolute inset-0 scanlines z-10 opacity-20"></div>
+<!-- Main Content Container -->
+<main class="relative z-20 flex flex-col items-center w-full max-w-4xl px-4 animate-fade-in">
+<!-- Large ASCII Logo -->
+<!-- Using pre tags to preserve monospace spacing for ASCII art -->
+<div class="mb-12 select-none pointer-events-none transform hover:scale-[1.02] transition-transform duration-500">
+<pre class="ascii-gradient text-[10px] sm:text-xs md:text-sm leading-[1.1] font-bold tracking-tighter text-center">  .d8888. U       U D8888b.  .d88b.  K   K U     U 
+  88'  YP 8       8 88  `8D .8P  Y8. 8  .8 8     8 
+  `8bo.   8       8 88   88 88    88 8 .88 8     8 
+    `Y8b. 8       8 88   88 88    88 888P  8     8 
+  db   8D 8       8 88  .8D `8b  d8' 8 `8b 8     8 
+  `8888Y' 'Y88888P' Y8888D'  `Y88P'  K   Y 'Y88888 
+            </pre>
+<p class="text-center mt-4 text-accent/60 tracking-[0.2em] text-sm font-display uppercase">Modern Charm Edition</p>
+</div>
+<!-- Menu Selector -->
+<div class="w-full max-w-md flex flex-col gap-3">
+<!-- Item 1: Active -->
+<button class="group relative w-full text-left focus:outline-none">
+<div class="absolute inset-0 bg-primary/10 rounded-lg scale-95 opacity-0 group-focus:opacity-100 group-hover:opacity-100 group-focus:scale-100 group-hover:scale-100 transition-all duration-200 ease-out border border-primary/20"></div>
+<div class="relative flex items-center px-6 py-4 rounded-lg">
+<!-- Cursor Indicator -->
+<span class="material-symbols-outlined text-primary mr-4 opacity-100 transition-opacity text-xl font-bold">
+                        chevron_right
+                    </span>
+<span class="text-primary font-bold text-lg tracking-wide">New Game</span>
+<!-- Keyboard Hint (Visible on hover/focus) -->
+<span class="ml-auto text-xs text-primary/50 opacity-100 font-mono hidden group-focus:inline-block group-hover:inline-block">ENTER</span>
+</div>
+</button>
+<!-- Item 2: Inactive -->
+<button class="group relative w-full text-left focus:outline-none">
+<div class="absolute inset-0 bg-surface/50 rounded-lg scale-95 opacity-0 group-focus:opacity-100 group-hover:opacity-100 group-focus:scale-100 group-hover:scale-100 transition-all duration-200 ease-out border border-surface"></div>
+<div class="relative flex items-center px-6 py-3 rounded-lg text-text-muted group-hover:text-text-main group-focus:text-text-main transition-colors">
+<!-- Placeholder for alignment -->
+<span class="material-symbols-outlined mr-4 opacity-0 group-hover:opacity-50 group-focus:opacity-50 text-xl transition-opacity">
+                        chevron_right
+                    </span>
+<span class="font-medium text-lg tracking-wide">Puzzle Library</span>
+</div>
+</button>
+<!-- Item 3: Inactive -->
+<button class="group relative w-full text-left focus:outline-none">
+<div class="absolute inset-0 bg-surface/50 rounded-lg scale-95 opacity-0 group-focus:opacity-100 group-hover:opacity-100 group-focus:scale-100 group-hover:scale-100 transition-all duration-200 ease-out border border-surface"></div>
+<div class="relative flex items-center px-6 py-3 rounded-lg text-text-muted group-hover:text-text-main group-focus:text-text-main transition-colors">
+<span class="material-symbols-outlined mr-4 opacity-0 group-hover:opacity-50 group-focus:opacity-50 text-xl transition-opacity">
+                        chevron_right
+                    </span>
+<span class="font-medium text-lg tracking-wide">History</span>
+</div>
+</button>
+<!-- Item 4: Inactive -->
+<button class="group relative w-full text-left focus:outline-none">
+<div class="absolute inset-0 bg-surface/50 rounded-lg scale-95 opacity-0 group-focus:opacity-100 group-hover:opacity-100 group-focus:scale-100 group-hover:scale-100 transition-all duration-200 ease-out border border-surface"></div>
+<div class="relative flex items-center px-6 py-3 rounded-lg text-text-muted group-hover:text-text-main group-focus:text-text-main transition-colors">
+<span class="material-symbols-outlined mr-4 opacity-0 group-hover:opacity-50 group-focus:opacity-50 text-xl transition-opacity">
+                        chevron_right
+                    </span>
+<span class="font-medium text-lg tracking-wide">Quit</span>
+</div>
+</button>
+</div>
+<!-- Footer / Status Bar -->
+<div class="fixed bottom-8 text-text-muted text-sm font-mono flex items-center gap-6 opacity-60">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface border border-white/10 text-xs">v1.0</span>
+<span>Modern Charm Sudoku</span>
+</div>
+<div class="h-1 w-1 rounded-full bg-text-muted/30"></div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<kbd class="px-2 py-0.5 rounded bg-surface border border-white/10 text-xs font-bold font-mono">k</kbd>
+<span class="text-xs">/</span>
+<kbd class="px-2 py-0.5 rounded bg-surface border border-white/10 text-xs font-bold font-mono">j</kbd>
+<span class="text-xs">Navigate</span>
+</div>
+<div class="flex items-center gap-1.5">
+<kbd class="px-2 py-0.5 rounded bg-surface border border-white/10 text-xs font-bold font-mono">Enter</kbd>
+<span class="text-xs">Select</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Simulated TUI Overlay Frame (Optional: adds to the terminal feel) -->
+<div class="fixed inset-0 border-[8px] border-surface/10 rounded-xl pointer-events-none z-50"></div>
+</body></html>

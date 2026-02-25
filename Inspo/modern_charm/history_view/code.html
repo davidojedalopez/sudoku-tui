@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Charm Sudoku - History View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#F5A97F", // Peach from PRD
+              "background-light": "#f8f6f6", 
+              "background-dark": "#1E1E2E", // Deep Violet from PRD
+              "surface": "#313244", // Surface from PRD
+              "text-main": "#CAD3F5", // Lavender from PRD
+              "text-muted": "#9399B2", // Overlay Text from PRD
+              "accent-blue": "#8AADF4", // Blue from PRD
+              "success": "#A6DA95", // Green from PRD
+              "error": "#ED8796", // Red from PRD
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"],
+            },
+            boxShadow: {
+                'glow': '0 0 10px rgba(245, 169, 127, 0.2)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for webkit browsers to match the TUI aesthetic */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E1E2E; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313244; 
+            border-radius: 6px;
+            border: 3px solid #1E1E2E;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #F5A97F; 
+        }
+
+        /* TUI-like scanlines effect overlay (subtle) */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display overflow-hidden selection:bg-primary selection:text-background-dark">
+<!-- Subtle texture overlay -->
+<div class="fixed inset-0 scanlines opacity-20 pointer-events-none z-50"></div>
+<div class="layout-container flex h-full grow flex-col max-w-7xl mx-auto w-full p-6 md:p-12 lg:px-24">
+<!-- Header Section -->
+<header class="flex items-center justify-between mb-8 pb-4 border-b border-surface">
+<div class="flex items-center gap-4">
+<div class="text-primary animate-pulse">
+<span class="material-symbols-outlined text-4xl">grid_on</span>
+</div>
+<div>
+<h1 class="text-text-main text-3xl font-extrabold tracking-tight">GAME HISTORY</h1>
+<p class="text-text-muted text-sm font-mono mt-1 flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-success"></span>
+                        TOTAL GAMES: 42 <span class="text-surface">|</span> WIN RATE: 85%
+                    </p>
+</div>
+</div>
+<!-- Navigation Hints (Top) -->
+<div class="hidden md:flex gap-6 text-text-muted text-xs font-mono">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface border border-white/10 text-text-main">k</span>
+<span>UP</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface border border-white/10 text-text-main">j</span>
+<span>DOWN</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface border border-white/10 text-text-main">esc</span>
+<span>BACK</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-h-0 bg-surface/20 rounded-xl border border-surface shadow-2xl relative overflow-hidden backdrop-blur-sm">
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-4 px-6 py-4 bg-surface/50 border-b border-surface text-xs font-bold tracking-widest text-text-muted uppercase font-mono select-none">
+<div class="col-span-3 flex items-center gap-2 cursor-pointer hover:text-text-main transition-colors group">
+                    DATE
+                    <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_downward</span>
+</div>
+<div class="col-span-2 flex items-center gap-2 cursor-pointer hover:text-text-main transition-colors group">
+                    DIFFICULTY
+                </div>
+<div class="col-span-3 flex items-center gap-2 cursor-pointer hover:text-text-main transition-colors group">
+                    TIME
+                </div>
+<div class="col-span-2 flex items-center gap-2 cursor-pointer hover:text-text-main transition-colors group">
+                    MISTAKES
+                </div>
+<div class="col-span-2 text-right flex items-center justify-end gap-2 cursor-pointer hover:text-text-main transition-colors group">
+                    RESULT
+                </div>
+</div>
+<!-- Scrollable Table Body -->
+<div class="flex-1 overflow-y-auto font-mono text-sm relative">
+<!-- Row 1 (Active/Selected) -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-primary bg-surface/40 hover:bg-surface/60 transition-colors items-center group cursor-pointer">
+<div class="col-span-3 text-text-main font-medium group-hover:text-white">
+                        2023-10-27 14:30
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error/20 text-error border border-error/30">
+                            HARD
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        12m 45s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-success font-semibold">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            SOLVED
+                        </span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-transparent hover:border-primary/50 hover:bg-surface/30 transition-colors items-center group cursor-pointer border-b border-surface/10">
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        2023-10-26 09:15
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20 text-primary border border-primary/30">
+                            MEDIUM
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        08m 20s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-success font-semibold">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            SOLVED
+                        </span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-transparent hover:border-primary/50 hover:bg-surface/30 transition-colors items-center group cursor-pointer border-b border-surface/10">
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        2023-10-25 18:45
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                            EXPERT
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        25m 10s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-text-muted font-medium opacity-70">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+                            GAVE UP
+                        </span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-transparent hover:border-primary/50 hover:bg-surface/30 transition-colors items-center group cursor-pointer border-b border-surface/10">
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        2023-10-24 12:00
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/20 text-success border border-success/30">
+                            EASY
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        03m 45s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-success font-semibold">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            SOLVED
+                        </span>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-transparent hover:border-primary/50 hover:bg-surface/30 transition-colors items-center group cursor-pointer border-b border-surface/10">
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        2023-10-23 20:30
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error/20 text-error border border-error/30">
+                            HARD
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        15m 00s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-success font-semibold">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            SOLVED
+                        </span>
+</div>
+</div>
+<!-- Row 6 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-transparent hover:border-primary/50 hover:bg-surface/30 transition-colors items-center group cursor-pointer border-b border-surface/10">
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        2023-10-22 11:10
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20 text-primary border border-primary/30">
+                            MEDIUM
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        09m 30s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-error/50"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-text-muted font-medium opacity-70">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+                            GAVE UP
+                        </span>
+</div>
+</div>
+<!-- Row 7 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 border-l-4 border-transparent hover:border-primary/50 hover:bg-surface/30 transition-colors items-center group cursor-pointer border-b border-surface/10">
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        2023-10-21 16:20
+                    </div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/20 text-success border border-success/30">
+                            EASY
+                        </span>
+</div>
+<div class="col-span-3 text-text-muted group-hover:text-text-main">
+                        04m 15s
+                    </div>
+<div class="col-span-2 text-text-muted">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface"></span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center gap-1.5 text-success font-semibold">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            SOLVED
+                        </span>
+</div>
+</div>
+</div>
+<!-- Footer / Pagination -->
+<div class="flex items-center justify-between px-6 py-3 bg-surface/50 border-t border-surface text-xs font-mono text-text-muted">
+<div class="flex items-center gap-4">
+<span>PAGE 1 OF 5</span>
+<span class="text-surface">|</span>
+<span>SHOWING 7 OF 42</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface/30 hover:bg-surface hover:text-white transition-colors cursor-pointer text-text-muted">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-background-dark font-bold hover:bg-primary/90 transition-colors cursor-pointer">
+                        1
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface/30 hover:bg-surface hover:text-white transition-colors cursor-pointer text-text-muted">
+                        2
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface/30 hover:bg-surface hover:text-white transition-colors cursor-pointer text-text-muted">
+                        3
+                    </button>
+<span class="px-1 text-text-muted/50">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface/30 hover:bg-surface hover:text-white transition-colors cursor-pointer text-text-muted">
+                        5
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface/30 hover:bg-surface hover:text-white transition-colors cursor-pointer text-text-muted">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Decorative elements to reinforce the TUI feel -->
+<div class="mt-4 text-center font-mono text-text-muted/40 text-xs">
+            MODERN CHARM SUDOKU v1.0.2 • BUILD 8942A
+        </div>
+</div>
+</body></html>

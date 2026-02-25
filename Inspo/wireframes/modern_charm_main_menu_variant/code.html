@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Charm Sudoku</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e64c7f",
+                        "primary-hover": "#d13b6d",
+                        "primary-light": "#fcebf2",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#211116",
+                        "text-main-light": "#171113",
+                        "text-main-dark": "#fcebf2",
+                        "text-secondary-light": "#87646f",
+                        "text-secondary-dark": "#d4b3be",
+                        "border-light": "#e5dcdf",
+                        "border-dark": "#4a3039",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #e5dcdf;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col transition-colors duration-200">
+<!-- Main Container -->
+<div class="relative flex h-full grow flex-col items-center justify-center min-h-screen w-full overflow-hidden">
+<!-- Decorative Background Elements -->
+<div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
+<!-- Content Card -->
+<div class="layout-content-container flex flex-col max-w-[480px] w-full flex-1 justify-center z-10 p-6">
+<!-- Header Section -->
+<div class="flex flex-col items-center gap-2 mb-10 text-center">
+<div class="w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+<span class="material-symbols-outlined text-primary text-5xl">grid_on</span>
+</div>
+<h1 class="text-text-main-light dark:text-text-main-dark text-5xl font-black leading-tight tracking-tight">Sudoku</h1>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-lg font-medium">Modern Charm Edition</p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-4 w-full mb-8">
+<!-- New Game -->
+<button class="group relative flex items-center justify-center w-full h-14 bg-primary hover:bg-primary-hover text-white text-lg font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/30 active:scale-[0.98]">
+<span class="material-symbols-outlined absolute left-6 text-2xl group-hover:rotate-12 transition-transform">add_circle</span>
+<span>New Game</span>
+</button>
+<!-- Continue Game -->
+<button class="group relative flex items-center justify-center w-full h-14 bg-white dark:bg-white/5 border-2 border-transparent hover:border-primary/20 text-text-main-light dark:text-text-main-dark text-lg font-bold rounded-xl transition-all shadow-sm hover:shadow-md active:scale-[0.98]">
+<span class="material-symbols-outlined absolute left-6 text-2xl text-primary/80 group-hover:text-primary transition-colors">resume</span>
+<span>Continue</span>
+<span class="absolute right-6 text-xs font-semibold bg-primary/10 text-primary px-2 py-1 rounded-md">04:23</span>
+</button>
+<!-- Daily Challenge -->
+<button class="group relative flex items-center justify-center w-full h-14 bg-transparent border-2 border-border-light dark:border-border-dark hover:border-primary/50 text-text-main-light dark:text-text-main-dark text-lg font-bold rounded-xl transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined absolute left-6 text-2xl text-text-secondary-light dark:text-text-secondary-dark group-hover:text-primary transition-colors">calendar_today</span>
+<span>Daily Challenge</span>
+</button>
+</div>
+<!-- Difficulty Selector -->
+<div class="flex flex-col items-center gap-4">
+<p class="text-sm font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">Select Difficulty</p>
+<div class="flex w-full bg-white dark:bg-white/5 p-1.5 rounded-2xl shadow-sm border border-border-light dark:border-border-dark">
+<!-- Easy -->
+<label class="flex-1 relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="difficulty" type="radio" value="easy"/>
+<div class="flex items-center justify-center h-10 rounded-xl transition-all duration-200 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-inner group-hover:text-primary">
+                            Easy
+                        </div>
+</label>
+<!-- Medium -->
+<label class="flex-1 relative cursor-pointer group">
+<input class="peer sr-only" name="difficulty" type="radio" value="medium"/>
+<div class="flex items-center justify-center h-10 rounded-xl transition-all duration-200 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-inner group-hover:text-primary">
+                            Medium
+                        </div>
+</label>
+<!-- Hard -->
+<label class="flex-1 relative cursor-pointer group">
+<input class="peer sr-only" name="difficulty" type="radio" value="hard"/>
+<div class="flex items-center justify-center h-10 rounded-xl transition-all duration-200 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-inner group-hover:text-primary">
+                            Hard
+                        </div>
+</label>
+<!-- Expert -->
+<label class="flex-1 relative cursor-pointer group">
+<input class="peer sr-only" name="difficulty" type="radio" value="expert"/>
+<div class="flex items-center justify-center h-10 rounded-xl transition-all duration-200 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-inner group-hover:text-primary">
+                            Expert
+                        </div>
+</label>
+</div>
+</div>
+<!-- Footer / Stats -->
+<div class="mt-12 flex justify-center gap-8 text-center">
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-border-light dark:border-border-dark flex items-center justify-center group-hover:border-primary/50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">emoji_events</span>
+</div>
+<span class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark group-hover:text-primary transition-colors">Awards</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-border-light dark:border-border-dark flex items-center justify-center group-hover:border-primary/50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">bar_chart</span>
+</div>
+<span class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark group-hover:text-primary transition-colors">Stats</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-border-light dark:border-border-dark flex items-center justify-center group-hover:border-primary/50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">settings</span>
+</div>
+<span class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark group-hover:text-primary transition-colors">Settings</span>
+</div>
+</div>
+</div>
+<!-- Subtle pattern overlay -->
+<div class="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#e64c7f 1px, transparent 1px); background-size: 24px 24px;">
+</div>
+</div>
+</body></html>

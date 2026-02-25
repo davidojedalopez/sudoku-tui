@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zen Monolith: Main Menu</title>
+<!-- Google Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d1d5db", /* Light gray for high contrast against dark bg, acting as 'stone' highlight */
+                        "primary-dark": "#374151", /* Darker stone gray */
+                        "background-light": "#e5e7eb",
+                        "background-dark": "#18181b", /* Zinc 900 - very dark gray/black */
+                        "stone-surface": "#27272a", /* Zinc 800 */
+                        "stone-border": "#3f3f46", /* Zinc 700 */
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"}, /* Sharp corners for 'sharp minimalist lines' */
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom subtle texture for stone feel */
+        .bg-stone-texture {
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%), linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display overflow-x-hidden min-h-screen flex flex-col">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-stone-texture group/design-root">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Navigation Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-stone-border px-8 py-5 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined !text-[32px]">grid_4x4</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[0.1em] uppercase">Sudoku</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-10 mr-4">
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium tracking-widest uppercase" href="#">Home</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium tracking-widest uppercase" href="#">Settings</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium tracking-widest uppercase" href="#">About</a>
+</nav>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden border border-stone-border hover:border-white transition-colors h-10 px-6 bg-transparent text-white text-sm font-bold tracking-widest uppercase">
+<span class="truncate">Log In</span>
+</button>
+</div>
+<!-- Mobile Menu Icon -->
+<div class="md:hidden text-white cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-1 flex-col items-center justify-center py-10 px-4 relative">
+<!-- Decorative Monolith Background Elements -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none z-0 flex justify-center items-center opacity-10">
+<div class="w-[600px] h-[800px] border border-white rotate-45 transform translate-y-20"></div>
+<div class="w-[500px] h-[700px] border border-white -rotate-12 absolute"></div>
+</div>
+<div class="layout-content-container flex flex-col max-w-[640px] w-full z-10 bg-stone-surface/30 p-12 backdrop-blur-sm border border-stone-border shadow-2xl">
+<!-- Icon / Logo Mark -->
+<div class="flex justify-center mb-8">
+<div class="w-20 h-20 border-2 border-primary flex items-center justify-center rotate-45 mb-4 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+<span class="material-symbols-outlined !text-[40px] text-white -rotate-45">landscape</span>
+</div>
+</div>
+<h1 class="text-white tracking-[0.2em] text-[40px] md:text-[56px] font-black leading-tight text-center pb-2 uppercase border-b border-stone-border/50 mb-6">
+                        Zen Monolith
+                    </h1>
+<p class="text-gray-400 text-lg font-light leading-relaxed pb-12 text-center max-w-md mx-auto">
+                        Clear your mind. Solve the stone. <br/>
+<span class="text-sm opacity-60">Daily Challenge #428</span>
+</p>
+<div class="flex flex-col gap-5 w-full max-w-[320px] mx-auto">
+<button class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden h-14 px-8 bg-white text-background-dark text-base font-bold tracking-[0.15em] uppercase hover:bg-gray-200 transition-all duration-300">
+<span class="absolute inset-y-0 left-0 w-[2px] bg-background-dark group-hover:w-2 transition-all duration-300"></span>
+<span class="truncate">New Game</span>
+<span class="material-symbols-outlined ml-2 text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden h-14 px-8 bg-transparent border border-stone-border text-white text-sm font-bold tracking-[0.15em] uppercase hover:bg-stone-surface hover:border-gray-500 transition-all duration-300">
+<span class="absolute inset-y-0 left-0 w-[2px] bg-transparent group-hover:bg-primary transition-all duration-300"></span>
+<span class="truncate">Continue</span>
+<span class="material-symbols-outlined ml-2 text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">resume</span>
+</button>
+<div class="flex gap-4 w-full">
+<button aria-label="Settings" class="flex-1 h-12 flex items-center justify-center border border-stone-border text-gray-400 hover:text-white hover:border-gray-500 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button aria-label="Leaderboard" class="flex-1 h-12 flex items-center justify-center border border-stone-border text-gray-400 hover:text-white hover:border-gray-500 transition-colors">
+<span class="material-symbols-outlined">leaderboard</span>
+</button>
+<button aria-label="Help" class="flex-1 h-12 flex items-center justify-center border border-stone-border text-gray-400 hover:text-white hover:border-gray-500 transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<footer class="flex justify-center py-6 border-t border-stone-border bg-background-dark text-stone-500 text-xs tracking-widest uppercase">
+                © 2023 Zen Monolith Sudoku. All rights reserved.
+            </footer>
+</div>
+</div>
+</body></html>

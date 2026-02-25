@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sudoku - Modern Charm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#338ce6",
+              "background-light": "#f6f7f8",
+              "background-dark": "#111921",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: #475569;
+        }
+        
+        /* Sudoku Grid Lines */
+        .sudoku-cell {
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .dark .sudoku-cell {
+            border-right: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+        }
+        
+        /* Thicker borders for 3x3 blocks */
+        .sudoku-cell:nth-child(3n) {
+            border-right: 2px solid #94a3b8;
+        }
+        .dark .sudoku-cell:nth-child(3n) {
+            border-right: 2px solid #64748b;
+        }
+        
+        /* Rightmost border fix */
+        .sudoku-cell:nth-child(9n) {
+            border-right: none;
+        }
+        
+        /* Bottom border logic needs to be handled via parent rows or grid layout, 
+           but since we are using flex/grid, we can just use a container border for the thick ones 
+           or utility classes. We'll use a CSS Grid for the board. */
+        
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(9, 1fr);
+        }
+        
+        .sudoku-cell:nth-child(n+19):nth-child(-n+27),
+        .sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 2px solid #94a3b8;
+        }
+        .dark .sudoku-cell:nth-child(n+19):nth-child(-n+27),
+        .dark .sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 2px solid #64748b;
+        }
+
+        .sudoku-cell:nth-child(n+73) {
+            border-bottom: none;
+        }
+
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col">
+<!-- Navbar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1a2632] px-10 py-3 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm4 0h2v14H9V5zm6 0h2v14h-2V5z" opacity="0.5"></path>
+<path d="M5 9h14v2H5V9zm0 6h14v2H5v-2z"></path>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Sudoku <span class="text-primary font-normal">Modern</span></h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex items-center justify-center rounded-lg size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="flex items-center justify-center rounded-lg size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
+<div class="flex flex-col lg:flex-row w-full gap-8 lg:gap-16 items-start justify-center">
+<!-- Left Column: Board -->
+<div class="flex flex-col items-center w-full max-w-[600px] mx-auto lg:mx-0">
+<div class="flex justify-between w-full items-end mb-4 px-2">
+<div>
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Classic</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Difficulty: <span class="text-primary font-bold">Medium</span></p>
+</div>
+<div class="text-right">
+<div class="text-2xl font-mono font-bold text-slate-900 dark:text-white">04:32</div>
+<div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Time Elapsed</div>
+</div>
+</div>
+<!-- Sudoku Board Container -->
+<div class="w-full aspect-square bg-white dark:bg-[#1e2a36] rounded-xl shadow-lg border-4 border-slate-200 dark:border-slate-700 overflow-hidden relative">
+<div class="sudoku-grid w-full h-full">
+<!-- Row 1 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">5</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors bg-primary/10 dark:bg-primary/20">3</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">7</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<!-- Row 2 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">6</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">1</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">9</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">5</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<!-- Row 3 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">9</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">8</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">6</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<!-- Row 4 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">8</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">6</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">3</div>
+<!-- Row 5 (Center) -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">4</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">8</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-bold text-primary bg-primary/10 dark:bg-primary/20 ring-2 ring-primary ring-inset cursor-pointer transition-colors relative z-10"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">3</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">1</div>
+<!-- Row 6 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">7</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">2</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">6</div>
+<!-- Row 7 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">6</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">2</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">8</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<!-- Row 8 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">4</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">1</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">9</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">5</div>
+<!-- Row 9 -->
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">8</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-400 dark:text-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"></div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">7</div>
+<div class="sudoku-cell flex items-center justify-center text-3xl font-medium text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors">9</div>
+</div>
+</div>
+<!-- Game Controls -->
+<div class="flex w-full gap-3 mt-8 justify-center">
+<button class="flex-1 flex flex-col items-center justify-center py-3 bg-white dark:bg-[#1a2632] rounded-xl shadow-sm hover:shadow-md hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all border border-slate-100 dark:border-slate-800 group">
+<span class="material-symbols-outlined text-2xl mb-1 text-slate-400 group-hover:text-primary transition-colors">undo</span>
+<span class="text-xs font-bold uppercase tracking-wide">Undo</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-3 bg-white dark:bg-[#1a2632] rounded-xl shadow-sm hover:shadow-md hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all border border-slate-100 dark:border-slate-800 group">
+<span class="material-symbols-outlined text-2xl mb-1 text-slate-400 group-hover:text-primary transition-colors">backspace</span>
+<span class="text-xs font-bold uppercase tracking-wide">Erase</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-3 bg-white dark:bg-[#1a2632] rounded-xl shadow-sm hover:shadow-md hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all border border-slate-100 dark:border-slate-800 group relative">
+<div class="absolute top-2 right-2 size-2 bg-primary rounded-full"></div>
+<span class="material-symbols-outlined text-2xl mb-1 text-slate-400 group-hover:text-primary transition-colors">edit_note</span>
+<span class="text-xs font-bold uppercase tracking-wide">Notes</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-3 bg-white dark:bg-[#1a2632] rounded-xl shadow-sm hover:shadow-md hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all border border-slate-100 dark:border-slate-800 group">
+<span class="material-symbols-outlined text-2xl mb-1 text-slate-400 group-hover:text-primary transition-colors">lightbulb</span>
+<span class="text-xs font-bold uppercase tracking-wide">Hint</span>
+</button>
+</div>
+</div>
+<!-- Right Column: Number Pad & Stats/Info -->
+<div class="flex flex-col w-full max-w-[400px] gap-8">
+<!-- Number Pad -->
+<div class="bg-white dark:bg-[#1a2632] p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Number Pad</h3>
+<div class="grid grid-cols-3 gap-3">
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">1</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">2</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">3</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">4</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">5</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">6</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">7</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">8</button>
+<button class="aspect-square flex items-center justify-center text-3xl font-semibold text-primary bg-blue-50 dark:bg-[#111921] rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">9</button>
+</div>
+</div>
+<!-- Game Status Card -->
+<div class="bg-primary text-white p-6 rounded-xl shadow-lg relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:scale-110 transition-transform"></div>
+<div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-110 transition-transform"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-bold text-lg">Mistakes</h3>
+<p class="text-blue-100 text-sm">Keep it clean!</p>
+</div>
+<span class="material-symbols-outlined text-3xl opacity-80">sentiment_satisfied</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-bold">0</span>
+<span class="text-blue-100 mb-1">/ 3</span>
+</div>
+<div class="w-full bg-black/20 h-2 rounded-full mt-4 overflow-hidden">
+<div class="bg-white w-0 h-full rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Daily Challenge Teaser -->
+<div class="bg-white dark:bg-[#1a2632] p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex gap-4 items-center cursor-pointer hover:border-primary/50 transition-colors">
+<div class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">emoji_events</span>
+</div>
+<div class="flex-grow">
+<h4 class="font-bold text-slate-900 dark:text-white">Daily Challenge</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Complete today's puzzle</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

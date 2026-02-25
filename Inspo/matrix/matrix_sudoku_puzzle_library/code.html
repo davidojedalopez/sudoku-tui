@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matrix Sudoku - Puzzle Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0df259",
+                        "background-light": "#f5f8f6",
+                        "background-dark": "#102216",
+                        "surface-dark": "#1a2c20",
+                        "border-dark": "#2a4230",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for that hacker terminal feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102216; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a4230; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0df259; 
+        }
+        
+        /* Glitch effect on hover for specific elements */
+        .glitch-hover:hover {
+            text-shadow: 2px 0 #0df259, -2px 0 #005500;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header -->
+<header class="flex shrink-0 items-center justify-between whitespace-nowrap border-b border-border-dark bg-background-dark px-6 py-4 z-10">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary group cursor-pointer">
+<span class="material-symbols-outlined text-3xl animate-pulse">terminal</span>
+<h2 class="text-primary text-xl font-bold leading-tight tracking-wider glitch-hover">MATRIX_SUDOKU_V.1.0</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-400 hover:text-primary transition-colors text-sm font-medium tracking-widest" href="#">SYSTEM</a>
+<a class="text-primary border-b border-primary text-sm font-bold tracking-widest" href="#">PUZZLES</a>
+<a class="text-slate-400 hover:text-primary transition-colors text-sm font-medium tracking-widest" href="#">ARCHIVES</a>
+<a class="text-slate-400 hover:text-primary transition-colors text-sm font-medium tracking-widest" href="#">SETTINGS</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="hidden md:flex items-center bg-surface-dark border border-border-dark rounded overflow-hidden w-64 h-10 focus-within:border-primary transition-colors group">
+<span class="material-symbols-outlined text-slate-500 pl-3 group-focus-within:text-primary">search</span>
+<input class="bg-transparent border-none text-slate-200 text-sm placeholder:text-slate-600 focus:ring-0 w-full font-mono uppercase" placeholder="SEARCH_PACKET_ID..." type="text"/>
+</div>
+<!-- User Profile / Logout -->
+<button class="flex items-center gap-2 border border-primary text-primary hover:bg-primary hover:text-background-dark transition-all px-4 py-2 rounded text-sm font-bold tracking-wider uppercase h-10">
+<span class="material-symbols-outlined text-lg">power_settings_new</span>
+<span class="hidden sm:inline">TERMINATE</span>
+</button>
+</div>
+</header>
+<!-- Main Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar (Desktop) -->
+<aside class="w-64 border-r border-border-dark bg-surface-dark hidden lg:flex flex-col p-4 gap-6 shrink-0 z-10">
+<div class="flex flex-col gap-2">
+<p class="text-xs text-slate-500 font-bold tracking-widest mb-2">/ROOT/DIRECTORIES</p>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary border-l-2 border-primary" href="#">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+<span class="text-sm font-medium">PUZZLE_LIBRARY</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 hover:bg-white/5 border-l-2 border-transparent transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">history</span>
+<span class="text-sm font-medium">RECENT_ACCESS</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 hover:bg-white/5 border-l-2 border-transparent transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">favorite</span>
+<span class="text-sm font-medium">FAVORITES</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 hover:bg-white/5 border-l-2 border-transparent transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">school</span>
+<span class="text-sm font-medium">TUTORIALS</span>
+</a>
+</div>
+<div class="mt-auto border-t border-border-dark pt-6">
+<div class="bg-black/40 rounded p-4 border border-border-dark">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs text-slate-400">SYSTEM_LOAD</span>
+<span class="text-xs text-primary font-mono">34%</span>
+</div>
+<div class="w-full bg-border-dark h-1 rounded overflow-hidden">
+<div class="bg-primary h-full w-[34%]"></div>
+</div>
+<div class="flex justify-between items-center mt-4 mb-2">
+<span class="text-xs text-slate-400">MEMORY</span>
+<span class="text-xs text-primary font-mono">62%</span>
+</div>
+<div class="w-full bg-border-dark h-1 rounded overflow-hidden">
+<div class="bg-primary h-full w-[62%]"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden relative">
+<!-- Background decorative elements -->
+<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(13,242,89,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(13,242,89,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+<!-- Content Header -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 p-6 sm:p-8 pb-4 z-10">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-primary/60 text-sm font-mono mb-1">
+<span>HOME</span>
+<span>/</span>
+<span>LIBRARY</span>
+<span>/</span>
+<span class="text-primary">INDEX</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-bold text-white tracking-tighter uppercase">
+<span class="text-primary">&gt;</span> DATA_PACKETS
+                        </h1>
+<p class="text-slate-400 text-sm md:text-base font-light max-w-xl mt-2 border-l border-primary/40 pl-4">
+                            ACCESSING ENCRYPTED SUDOKU MATRICES. SELECT A PACKET TO BEGIN DECRYPTION SEQUENCE.
+                        </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center gap-2 bg-surface-dark hover:bg-border-dark border border-border-dark text-white px-4 py-2 rounded transition-colors text-sm font-bold uppercase tracking-wide">
+<span class="material-symbols-outlined text-lg">tune</span>
+                            FILTER
+                        </button>
+<button class="flex items-center justify-center gap-2 bg-primary text-background-dark hover:bg-primary/90 px-4 py-2 rounded transition-colors text-sm font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(13,242,89,0.3)]">
+<span class="material-symbols-outlined text-lg">sync</span>
+                            REFRESH_STREAM
+                        </button>
+</div>
+</div>
+<!-- Stats/Filters Bar -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 sm:px-8 py-2 mb-4 z-10">
+<div class="bg-surface-dark/50 border border-border-dark p-3 rounded flex items-center gap-3 backdrop-blur-sm">
+<div class="bg-primary/20 p-2 rounded text-primary">
+<span class="material-symbols-outlined">dataset</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase">Total Packets</p>
+<p class="text-white font-mono text-lg font-bold">1,024</p>
+</div>
+</div>
+<div class="bg-surface-dark/50 border border-border-dark p-3 rounded flex items-center gap-3 backdrop-blur-sm">
+<div class="bg-blue-500/20 p-2 rounded text-blue-400">
+<span class="material-symbols-outlined">lock_open</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase">Available</p>
+<p class="text-white font-mono text-lg font-bold">842</p>
+</div>
+</div>
+<div class="bg-surface-dark/50 border border-border-dark p-3 rounded flex items-center gap-3 backdrop-blur-sm">
+<div class="bg-yellow-500/20 p-2 rounded text-yellow-400">
+<span class="material-symbols-outlined">hourglass_top</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase">In Progress</p>
+<p class="text-white font-mono text-lg font-bold">12</p>
+</div>
+</div>
+<div class="bg-surface-dark/50 border border-border-dark p-3 rounded flex items-center gap-3 backdrop-blur-sm">
+<div class="bg-primary/20 p-2 rounded text-primary">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase">Decrypted</p>
+<p class="text-white font-mono text-lg font-bold">170</p>
+</div>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="flex-1 overflow-auto px-6 sm:px-8 pb-8 z-10 custom-scrollbar">
+<div class="w-full border border-border-dark bg-surface-dark/30 backdrop-blur-md rounded-lg overflow-hidden shadow-2xl">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-dark border-b border-border-dark text-xs uppercase tracking-widest text-slate-400">
+<th class="p-4 font-medium w-[150px]">Packet_ID</th>
+<th class="p-4 font-medium">Difficulty_Level</th>
+<th class="p-4 font-medium">Status</th>
+<th class="p-4 font-medium hidden md:table-cell">Integrity</th>
+<th class="p-4 font-medium hidden sm:table-cell">Last_Access</th>
+<th class="p-4 font-medium text-right">Action</th>
+</tr>
+</thead>
+<tbody class="text-sm divide-y divide-border-dark">
+<!-- Row 1 -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 font-mono text-primary font-bold group-hover:text-white transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-50">data_object</span>
+                                            0X1A4F
+                                        </div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-green-900/40 text-green-400 border border-green-900">
+                                            LEVEL_1
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 text-slate-300">
+<span class="material-symbols-outlined text-primary text-sm">lock_open</span>
+<span>UNLOCKED</span>
+</div>
+</td>
+<td class="p-4 hidden md:table-cell">
+<div class="flex items-center gap-3">
+<div class="w-24 bg-border-dark h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-full shadow-[0_0_10px_rgba(13,242,89,0.8)]"></div>
+</div>
+<span class="font-mono text-xs text-primary">100%</span>
+</div>
+</td>
+<td class="p-4 text-slate-400 font-mono text-xs hidden sm:table-cell">
+                                        --:--:--
+                                    </td>
+<td class="p-4 text-right">
+<button class="text-primary hover:text-white font-bold text-xs tracking-widest uppercase hover:underline">
+                                            [ ACCESS ]
+                                        </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 font-mono text-primary font-bold group-hover:text-white transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-50">data_object</span>
+                                            0X2B5C
+                                        </div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-yellow-900/30 text-yellow-500 border border-yellow-900">
+                                            LEVEL_2
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>LOCKED</span>
+</div>
+</td>
+<td class="p-4 hidden md:table-cell">
+<div class="flex items-center gap-3">
+<div class="w-24 bg-border-dark h-1.5 rounded-full overflow-hidden">
+<div class="bg-transparent h-full w-0"></div>
+</div>
+<span class="font-mono text-xs text-slate-600">0%</span>
+</div>
+</td>
+<td class="p-4 text-slate-400 font-mono text-xs hidden sm:table-cell">
+                                        --:--:--
+                                    </td>
+<td class="p-4 text-right">
+<button class="text-slate-600 cursor-not-allowed font-bold text-xs tracking-widest uppercase">
+                                            [ RESTRICTED ]
+                                        </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 font-mono text-primary font-bold group-hover:text-white transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-50">data_object</span>
+                                            0X3C6D
+                                        </div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-green-900/40 text-green-400 border border-green-900">
+                                            LEVEL_1
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span>COMPLETED</span>
+</div>
+</td>
+<td class="p-4 hidden md:table-cell">
+<div class="flex items-center gap-3">
+<div class="w-24 bg-border-dark h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-full"></div>
+</div>
+<span class="font-mono text-xs text-primary">100%</span>
+</div>
+</td>
+<td class="p-4 text-slate-400 font-mono text-xs hidden sm:table-cell">
+                                        2023-10-24 14:02
+                                    </td>
+<td class="p-4 text-right">
+<button class="text-white hover:text-primary font-bold text-xs tracking-widest uppercase hover:underline">
+                                            [ REVIEW ]
+                                        </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-primary/5 transition-colors bg-surface-dark/40">
+<td class="p-4 font-mono text-primary font-bold group-hover:text-white transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-50 animate-pulse">terminal</span>
+                                            0X4D7E
+                                        </div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-red-900/30 text-red-400 border border-red-900">
+                                            LEVEL_3
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 text-yellow-400">
+<span class="material-symbols-outlined text-sm">enhanced_encryption</span>
+<span>ENCRYPTED</span>
+</div>
+</td>
+<td class="p-4 hidden md:table-cell">
+<div class="flex items-center gap-3">
+<div class="w-24 bg-border-dark h-1.5 rounded-full overflow-hidden">
+<div class="bg-yellow-400 h-full w-[45%]"></div>
+</div>
+<span class="font-mono text-xs text-yellow-400">45%</span>
+</div>
+</td>
+<td class="p-4 text-slate-400 font-mono text-xs hidden sm:table-cell">
+                                        2023-10-25 09:15
+                                    </td>
+<td class="p-4 text-right">
+<button class="text-primary hover:text-white font-bold text-xs tracking-widest uppercase hover:underline animate-pulse">
+                                            [ RESUME ]
+                                        </button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 font-mono text-primary font-bold group-hover:text-white transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-50">data_object</span>
+                                            0X5E8F
+                                        </div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-yellow-900/30 text-yellow-500 border border-yellow-900">
+                                            LEVEL_2
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>LOCKED</span>
+</div>
+</td>
+<td class="p-4 hidden md:table-cell">
+<div class="flex items-center gap-3">
+<div class="w-24 bg-border-dark h-1.5 rounded-full overflow-hidden">
+<div class="bg-transparent h-full w-0"></div>
+</div>
+<span class="font-mono text-xs text-slate-600">0%</span>
+</div>
+</td>
+<td class="p-4 text-slate-400 font-mono text-xs hidden sm:table-cell">
+                                        --:--:--
+                                    </td>
+<td class="p-4 text-right">
+<button class="text-slate-600 cursor-not-allowed font-bold text-xs tracking-widest uppercase">
+                                            [ RESTRICTED ]
+                                        </button>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 font-mono text-primary font-bold group-hover:text-white transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm opacity-50">data_object</span>
+                                            0X6F9G
+                                        </div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-purple-900/30 text-purple-400 border border-purple-900">
+                                            LEVEL_4
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-sm">shield_lock</span>
+<span>HIGH_SEC</span>
+</div>
+</td>
+<td class="p-4 hidden md:table-cell">
+<div class="flex items-center gap-3">
+<div class="w-24 bg-border-dark h-1.5 rounded-full overflow-hidden">
+<div class="bg-transparent h-full w-0"></div>
+</div>
+<span class="font-mono text-xs text-slate-600">0%</span>
+</div>
+</td>
+<td class="p-4 text-slate-400 font-mono text-xs hidden sm:table-cell">
+                                        --:--:--
+                                    </td>
+<td class="p-4 text-right">
+<button class="text-slate-600 cursor-not-allowed font-bold text-xs tracking-widest uppercase">
+                                            [ RESTRICTED ]
+                                        </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-center gap-2 mt-8">
+<button class="size-10 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-surface-dark rounded-full transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="size-10 flex items-center justify-center bg-primary text-background-dark font-bold rounded-full shadow-[0_0_10px_rgba(13,242,89,0.5)]">
+                            1
+                        </button>
+<button class="size-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-surface-dark rounded-full transition-colors">
+                            2
+                        </button>
+<button class="size-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-surface-dark rounded-full transition-colors">
+                            3
+                        </button>
+<span class="text-slate-600">...</span>
+<button class="size-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-surface-dark rounded-full transition-colors">
+                            8
+                        </button>
+<button class="size-10 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-surface-dark rounded-full transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Footer Terminal Status Line -->
+<div class="bg-surface-dark border-t border-border-dark p-2 px-4 flex justify-between items-center text-[10px] sm:text-xs text-primary/60 font-mono uppercase z-20">
+<div class="flex gap-4">
+<span>Status: <span class="text-primary">ONLINE</span></span>
+<span>Connection: <span class="text-primary">SECURE (TLS 1.3)</span></span>
+<span class="hidden sm:inline">Server: <span class="text-slate-400">MATRIX-01</span></span>
+</div>
+<div class="animate-pulse">_CURSOR_ACTIVE</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

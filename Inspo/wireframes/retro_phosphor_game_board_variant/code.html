@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Phosphor Sudoku</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#f4af25",
+                        "primary-dim": "#b47d1b",
+                        "primary-glow": "rgba(244, 175, 37, 0.15)",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#1a1610",
+                        "crt-black": "#0c0a06",
+                        "crt-line": "#3a3020",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem",
+                    },
+                    boxShadow: {
+                        "glow": "0 0 10px rgba(244, 175, 37, 0.4), 0 0 20px rgba(244, 175, 37, 0.2)",
+                        "glow-sm": "0 0 5px rgba(244, 175, 37, 0.3)",
+                        "crt": "inset 0 0 100px rgba(0,0,0,0.9)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for retro feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1610; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3a3020; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f4af25; 
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.6;
+        }
+
+        /* Subtle flicker animation */
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.99; }
+            10% { opacity: 0.95; }
+            15% { opacity: 0.98; }
+            20% { opacity: 0.96; }
+            50% { opacity: 0.99; }
+            100% { opacity: 0.97; }
+        }
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 8px rgba(244, 175, 37, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-crt-black font-display text-slate-900 dark:text-primary min-h-screen flex flex-col overflow-x-hidden relative">
+<!-- Scanline Overlay -->
+<div class="scanlines"></div>
+<div class="layout-container flex h-full grow flex-col crt-flicker relative z-10">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b-2 border-primary/30 bg-background-dark/90 px-6 py-4 lg:px-10 sticky top-0 z-40 backdrop-blur-sm shadow-glow-sm">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6 text-primary animate-pulse">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">grid_4x4</span>
+</div>
+<h2 class="text-primary text-xl font-bold leading-tight tracking-widest text-glow">RETRO_SUDOKU</h2>
+</div>
+<div class="hidden lg:flex flex-1 justify-end gap-8 items-center">
+<div class="flex items-center gap-9">
+<a class="text-primary/70 hover:text-primary hover:text-glow text-sm font-medium transition-all duration-200" href="#">HOME</a>
+<a class="text-primary text-glow text-sm font-bold border-b-2 border-primary pb-0.5" href="#">NEW_GAME</a>
+<a class="text-primary/70 hover:text-primary hover:text-glow text-sm font-medium transition-all duration-200" href="#">SETTINGS</a>
+<a class="text-primary/70 hover:text-primary hover:text-glow text-sm font-medium transition-all duration-200" href="#">HIGH_SCORES</a>
+</div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded bg-primary/20 hover:bg-primary/40 border border-primary text-primary hover:text-white text-sm font-bold h-10 px-6 transition-all shadow-glow-sm uppercase tracking-wider">
+<span class="truncate">LOGIN</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded border border-primary/50 size-10" data-alt="User Avatar Pixel Art" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBG-Hm17ghC6vprhajhmisNLt_4GkYcPbbk3_aVpBe4Xuuf8OOsCEs9MKE-AWc8KIK0XDz5uxx3xN6p0ZeBQwqWAVRykK82CAS8HTFD-ueyyG5Ll7aEiOCN7zqHvZaTCpwetU8zUMSLY_r4yYjfP4iwmk4WtCNfcc_7sF-I9LzU-yUIz8JPC-pYGIQKhJ5AhDpnTIVZpmCXd6bK8jpdksdJeaA3Sey3nPXCrKiS4dEuvwmNYT-KI5AsaKLCDIY5gMynlLoyFeIPElOv");'></div>
+</div>
+<!-- Mobile Menu Icon -->
+<div class="lg:hidden text-primary">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-col lg:flex-row flex-1 w-full max-w-[1440px] mx-auto p-4 lg:p-8 gap-8">
+<!-- Left Sidebar / Controls -->
+<aside class="flex flex-col gap-6 w-full lg:w-64 shrink-0 order-2 lg:order-1">
+<div class="bg-background-dark/80 border border-primary/30 p-6 rounded shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col gap-1 mb-6 border-b border-primary/20 pb-4">
+<h1 class="text-primary text-lg font-bold tracking-wider text-glow">CONTROLS</h1>
+<p class="text-primary/50 text-xs font-mono uppercase animate-pulse">SYSTEM_READY_</p>
+</div>
+<div class="flex flex-col gap-3">
+<button class="group flex items-center gap-3 px-4 py-3 rounded bg-primary/10 border border-primary/30 hover:bg-primary/20 hover:border-primary transition-all">
+<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">undo</span>
+<span class="text-primary/80 text-sm font-medium group-hover:text-white font-mono">CMD_UNDO</span>
+</button>
+<button class="group flex items-center gap-3 px-4 py-3 rounded bg-transparent border border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">lightbulb</span>
+<span class="text-primary/70 text-sm font-medium group-hover:text-primary font-mono">CMD_HINT</span>
+</button>
+<button class="group flex items-center gap-3 px-4 py-3 rounded bg-transparent border border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">edit</span>
+<span class="text-primary/70 text-sm font-medium group-hover:text-primary font-mono">CMD_NOTE</span>
+</button>
+<button class="group flex items-center gap-3 px-4 py-3 rounded bg-transparent border border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">backspace</span>
+<span class="text-primary/70 text-sm font-medium group-hover:text-primary font-mono">CMD_ERASE</span>
+</button>
+<button class="group flex items-center gap-3 px-4 py-3 rounded bg-transparent border border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all mt-4">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">check_circle</span>
+<span class="text-primary/70 text-sm font-medium group-hover:text-primary font-mono">CMD_SOLVE</span>
+</button>
+</div>
+</div>
+<!-- Number Pad (Mobile/Tablet friendly mainly, but useful sidebar) -->
+<div class="bg-background-dark/80 border border-primary/30 p-6 rounded shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+<h3 class="text-primary text-sm font-bold tracking-wider mb-4 border-b border-primary/20 pb-2">INPUT_MATRIX</h3>
+<div class="grid grid-cols-3 gap-2">
+<!-- Generating 1-9 buttons -->
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">1</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">2</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">3</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">4</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">5</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">6</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">7</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">8</button>
+<button class="h-10 border border-primary/40 text-primary hover:bg-primary hover:text-background-dark font-mono text-lg font-bold rounded transition-colors">9</button>
+</div>
+</div>
+</aside>
+<!-- Game Board Area -->
+<div class="flex-1 flex flex-col items-center order-1 lg:order-2 w-full">
+<div class="w-full flex justify-between items-end mb-4 px-2">
+<h1 class="text-primary text-3xl font-bold tracking-tight text-glow uppercase">LEVEL: HARDCORE</h1>
+<div class="flex gap-2">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+<span class="w-2 h-2 bg-primary/50 rounded-full"></span>
+<span class="w-2 h-2 bg-primary/30 rounded-full"></span>
+</div>
+</div>
+<div class="relative p-2 bg-background-dark rounded-xl shadow-[0_0_30px_rgba(244,175,37,0.15)] border-2 border-primary/30 w-full max-w-[600px] aspect-square">
+<!-- Decorative Corners -->
+<div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+<div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+<div class="grid grid-cols-9 grid-rows-9 w-full h-full border-2 border-primary bg-crt-black">
+<!-- Row 1 -->
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary bg-primary/10">5</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">3</div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">7</div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<!-- Row 2 -->
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">6</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary bg-primary/10">1</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">9</div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary">5</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<!-- Row 3 -->
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary">9</div>
+<div class="border-r-2 border-b-2 border-primary border-b-primary flex items-center justify-center text-2xl font-mono text-primary">8</div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b-2 border-primary border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary">6</div>
+<div class="border-b-2 border-primary border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<!-- Row 4 -->
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">8</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">6</div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">3</div>
+<!-- Row 5 -->
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">4</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary bg-primary text-background-dark font-bold">8</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary">3</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">1</div>
+<!-- Row 6 -->
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary">7</div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b-2 border-primary border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary">2</div>
+<div class="border-r-2 border-b-2 border-primary border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b-2 border-primary/30 border-b-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-b-2 border-primary border-b-primary flex items-center justify-center text-2xl font-mono text-primary">6</div>
+<!-- Row 7 -->
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">6</div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">2</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">8</div>
+<div class="border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<!-- Row 8 -->
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">4</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">1</div>
+<div class="border-r-2 border-b border-primary flex items-center justify-center text-2xl font-mono text-primary">9</div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-b border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">5</div>
+<!-- Row 9 -->
+<div class="border-r border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r-2 border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">8</div>
+<div class="border-r-2 border-primary flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-primary/30 flex items-center justify-center text-2xl font-mono text-primary/50"></div>
+<div class="border-r border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">7</div>
+<div class="border-primary/30 flex items-center justify-center text-2xl font-mono text-primary">9</div>
+</div>
+</div>
+<!-- Stats Footer -->
+<div class="flex flex-wrap gap-4 p-6 w-full max-w-[800px] justify-center">
+<div class="flex min-w-[150px] flex-1 flex-col gap-1 rounded p-4 border border-primary/30 bg-primary/5 relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<p class="text-primary/70 text-xs font-mono uppercase tracking-widest relative z-10">TIME_ELAPSED</p>
+<p class="text-primary text-3xl font-bold font-mono tracking-tighter text-glow relative z-10">14:20</p>
+</div>
+<div class="flex min-w-[150px] flex-1 flex-col gap-1 rounded p-4 border border-primary/30 bg-primary/5 relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<p class="text-primary/70 text-xs font-mono uppercase tracking-widest relative z-10">ERRORS</p>
+<p class="text-red-500 text-3xl font-bold font-mono tracking-tighter relative z-10" style="text-shadow: 0 0 5px rgba(239, 68, 68, 0.5)">2<span class="text-primary/40 text-xl">/3</span></p>
+</div>
+<div class="flex min-w-[150px] flex-1 flex-col gap-1 rounded p-4 border border-primary/30 bg-primary/5 relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<p class="text-primary/70 text-xs font-mono uppercase tracking-widest relative z-10">SCORE</p>
+<p class="text-primary text-3xl font-bold font-mono tracking-tighter text-glow relative z-10">04500</p>
+</div>
+</div>
+</div>
+<!-- Right Sidebar / History (Optional extra info) -->
+<aside class="flex flex-col gap-4 w-full lg:w-64 shrink-0 order-3 hidden xl:flex">
+<div class="bg-background-dark/80 border border-primary/30 p-6 rounded h-full shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col gap-1 mb-6 border-b border-primary/20 pb-4">
+<h1 class="text-primary text-lg font-bold tracking-wider text-glow">LOG_HISTORY</h1>
+<p class="text-primary/50 text-xs font-mono uppercase">SESSION_active</p>
+</div>
+<div class="flex flex-col gap-2 font-mono text-xs h-full overflow-y-auto pr-2 custom-scrollbar">
+<div class="flex justify-between text-primary/60 border-b border-primary/10 pb-1">
+<span>&gt; CELL[4,5]</span>
+<span>= 8</span>
+</div>
+<div class="flex justify-between text-primary/60 border-b border-primary/10 pb-1">
+<span>&gt; CELL[3,9]</span>
+<span>= 3</span>
+</div>
+<div class="flex justify-between text-primary/60 border-b border-primary/10 pb-1">
+<span>&gt; CMD_UNDO</span>
+<span>OK</span>
+</div>
+<div class="flex justify-between text-red-400 border-b border-primary/10 pb-1">
+<span>&gt; CELL[1,2]</span>
+<span>ERR</span>
+</div>
+<div class="flex justify-between text-primary/60 border-b border-primary/10 pb-1">
+<span>&gt; CELL[8,8]</span>
+<span>= 1</span>
+</div>
+<div class="flex justify-between text-primary/60 border-b border-primary/10 pb-1">
+<span>&gt; NOTE[2,2]</span>
+<span>+ 4</span>
+</div>
+<div class="mt-auto pt-4 text-center">
+<span class="inline-block w-2 h-4 bg-primary animate-pulse"></span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

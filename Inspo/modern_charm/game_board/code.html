@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Charm Sudoku - Game Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F5A97F", // Peach
+                        "background-dark": "#1E1E2E", // Deep Violet
+                        "surface": "#313244", // Overlay
+                        "text-main": "#CAD3F5", // Lavender
+                        "text-muted": "#9399B2", // Overlay Text
+                        "accent": "#8AADF4", // Blue
+                        "success": "#A6DA95", // Green
+                        "error": "#ED8796", // Red
+                        "highlight": "#363A4F", // Surface 1
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 10px rgba(245, 169, 127, 0.3)',
+                        'glow-error': '0 0 10px rgba(237, 135, 150, 0.3)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for terminal feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E1E2E; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313244; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45475a; 
+        }
+
+        .crt-scanline {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        /* TUI Grid Borders using CSS borders to simulate block characters */
+        .tui-border-r { border-right: 2px solid #313244; }
+        .tui-border-b { border-bottom: 2px solid #313244; }
+        .tui-border-heavy-r { border-right: 4px solid #585b70; }
+        .tui-border-heavy-b { border-bottom: 4px solid #585b70; }
+        
+        /* Specific overrides for grid structure */
+        .sudoku-cell:nth-child(3n) { border-right-width: 4px; border-color: #585b70; }
+        .sudoku-cell:nth-child(9n) { border-right-width: 0px; }
+        .sudoku-row:nth-child(3n) .sudoku-cell { border-bottom-width: 4px; border-color: #585b70; }
+        .sudoku-row:last-child .sudoku-cell { border-bottom-width: 0px; }
+
+    </style>
+</head>
+<body class="bg-[#11111b] min-h-screen flex items-center justify-center font-display overflow-hidden selection:bg-primary selection:text-background-dark">
+<!-- Terminal Window Container -->
+<div class="relative w-full max-w-6xl h-[90vh] bg-background-dark rounded-xl shadow-2xl overflow-hidden flex flex-col border border-surface">
+<!-- CRT Effect Overlay -->
+<div class="absolute inset-0 crt-scanline z-50 opacity-20 pointer-events-none"></div>
+<!-- Window Header (Mac-style terminal controls) -->
+<div class="h-10 bg-surface flex items-center px-4 justify-between border-b border-[#45475a] shrink-0">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-[#ed8796]"></div>
+<div class="w-3 h-3 rounded-full bg-[#eed49f]"></div>
+<div class="w-3 h-3 rounded-full bg-[#a6da95]"></div>
+</div>
+<div class="text-text-muted text-xs font-mono tracking-widest opacity-60">user@modern-charm:~/sudoku</div>
+<div class="w-14"></div> <!-- Spacer for balance -->
+</div>
+<!-- Main Content Area -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Left Panel: The Grid -->
+<div class="flex-1 flex items-center justify-center bg-background-dark p-8 relative">
+<!-- Decorative background elements -->
+<div class="absolute top-4 left-4 text-surface opacity-20 text-9xl font-bold select-none pointer-events-none">01</div>
+<div class="absolute bottom-4 right-4 text-surface opacity-20 text-9xl font-bold select-none pointer-events-none">09</div>
+<!-- Sudoku Board Container -->
+<div class="bg-[#181825] p-1 rounded-lg shadow-2xl border-2 border-surface">
+<div class="grid grid-cols-1 font-mono text-xl select-none">
+<!-- Row 1 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">4</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">1</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+</div>
+<!-- Row 2 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">7</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">3</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">9</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+</div>
+<!-- Row 3 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors relative">
+<!-- Pencil Marks Example -->
+<div class="grid grid-cols-3 gap-0.5 text-[8px] leading-none text-text-muted absolute inset-0 p-1 opacity-70">
+<span>1</span><span></span><span>3</span>
+<span></span><span></span><span></span>
+<span></span><span>8</span><span></span>
+</div>
+</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">2</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">8</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">6</div>
+</div>
+<!-- Row 4 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">9</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">3</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">2</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">6</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+</div>
+<!-- Row 5 (Active Row Example) -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">6</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<!-- ACTIVE CELL -->
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface bg-highlight text-primary font-bold shadow-glow cursor-pointer relative z-10 animate-pulse">
+                                5
+                                <!-- Cursor Indicator -->
+<div class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary"></div>
+</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<!-- Highlighted Matching Number -->
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-success font-bold cursor-pointer hover:bg-surface/30 transition-colors">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">8</div>
+</div>
+<!-- Row 6 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">4</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">9</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">6</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">3</div>
+</div>
+<!-- Row 7 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">3</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">2</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+</div>
+<!-- Row 8 (Error Example) -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<!-- Error Cell -->
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface bg-error text-background-dark font-bold shadow-glow-error cursor-pointer">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">8</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-success font-bold cursor-pointer hover:bg-surface/30 transition-colors">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">4</div>
+</div>
+<!-- Row 9 -->
+<div class="flex sudoku-row">
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">8</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">5</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-main cursor-pointer hover:bg-surface/30 transition-colors">1</div>
+<div class="w-14 h-14 flex items-center justify-center sudoku-cell border-r border-b border-surface text-text-muted cursor-pointer hover:bg-surface/30 transition-colors"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Sidebar Info -->
+<div class="w-80 bg-[#181825] border-l border-surface flex flex-col p-6 gap-8 font-mono z-10">
+<!-- Timer -->
+<div class="space-y-2">
+<h3 class="text-text-muted text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span> Timer
+                    </h3>
+<div class="text-4xl text-accent font-bold tracking-tight">04:23</div>
+</div>
+<!-- Mistakes & Difficulty -->
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<h3 class="text-text-muted text-xs font-bold tracking-widest uppercase">Mistakes</h3>
+<div class="text-xl text-text-main font-bold">1/3</div>
+<!-- Simple visual bar for mistakes -->
+<div class="flex gap-1">
+<div class="h-1 w-full bg-error rounded-full"></div>
+<div class="h-1 w-full bg-surface rounded-full"></div>
+<div class="h-1 w-full bg-surface rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<h3 class="text-text-muted text-xs font-bold tracking-widest uppercase">Difficulty</h3>
+<div class="text-xl text-primary font-bold">MEDIUM</div>
+</div>
+</div>
+<!-- Game Log -->
+<div class="flex-1 min-h-0 flex flex-col space-y-2">
+<h3 class="text-text-muted text-xs font-bold tracking-widest uppercase border-b border-surface pb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">terminal</span> Log
+                     </h3>
+<div class="flex-1 overflow-y-auto space-y-3 pr-2 text-sm text-text-muted">
+<p class="flex gap-2">
+<span class="text-primary font-bold">&gt;</span>
+<span>Game started</span>
+</p>
+<p class="flex gap-2">
+<span class="text-primary font-bold">&gt;</span>
+<span>Placed <span class="text-text-main font-bold">5</span> at E4</span>
+</p>
+<p class="flex gap-2 opacity-50">
+<span class="text-primary font-bold">&gt;</span>
+<span>Note <span class="text-text-main font-bold">3,8</span> at C1</span>
+</p>
+<p class="flex gap-2 text-error">
+<span class="text-error font-bold">!</span>
+<span>Conflict at H3</span>
+</p>
+</div>
+</div>
+<!-- Controls Guide -->
+<div class="bg-surface/30 rounded-lg p-3 space-y-2">
+<div class="flex justify-between items-center text-xs text-text-muted">
+<span>Move</span>
+<div class="flex gap-1 font-bold text-text-main">
+<span class="bg-surface px-1.5 rounded">h</span>
+<span class="bg-surface px-1.5 rounded">j</span>
+<span class="bg-surface px-1.5 rounded">k</span>
+<span class="bg-surface px-1.5 rounded">l</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-xs text-text-muted">
+<span>Note</span>
+<span class="bg-surface px-1.5 rounded font-bold text-text-main">n</span>
+</div>
+<div class="flex justify-between items-center text-xs text-text-muted">
+<span>Undo</span>
+<span class="bg-surface px-1.5 rounded font-bold text-text-main">u</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Status Bar -->
+<div class="h-9 bg-[#89b4fa] flex items-center justify-between px-3 text-sm font-mono shrink-0">
+<div class="flex items-center gap-4 text-[#181825] font-bold">
+<!-- Mode Indicator: Logic to switch bg color based on mode would be here. Showing NORMAL mode. -->
+<div class="flex items-center gap-2 px-2 py-0.5 rounded bg-[#181825]/10">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>NORMAL</span>
+</div>
+<span class="opacity-50">|</span>
+<div class="text-[#181825]/80 font-normal">
+                    Waiting for input...
+                </div>
+</div>
+<div class="flex items-center gap-4 text-[#181825] font-semibold text-xs">
+<span>Undo: <span class="font-bold border-b border-black/20">u</span></span>
+<span>Redo: <span class="font-bold border-b border-black/20">r</span></span>
+<span>Quit: <span class="font-bold border-b border-black/20">q</span></span>
+</div>
+</div>
+</div>
+</body></html>

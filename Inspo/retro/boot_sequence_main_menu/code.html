@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Phosphor Sudoku - Boot Sequence</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FFB000", // Overriding to match the specific Amber Phosphor request
+                        "primary-dim": "#966300",
+                        "primary-bright": "#FFD15C",
+                        "background-light": "#f8f7f5", // Keeping structure but unused in this dark design
+                        "background-dark": "#0A0600", // The Void
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"], // Added for terminal feel
+                    },
+                    animation: {
+                        'blink': 'blink 1s step-end infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                        'flicker': 'flicker 0.15s infinite',
+                    },
+                    keyframes: {
+                        blink: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' },
+                        },
+                        flicker: {
+                            '0%': { opacity: '0.97' },
+                            '50%': { opacity: '1' },
+                            '100%': { opacity: '0.98' },
+                        }
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* CRT Effect Overlay */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Subtle text glow */
+        .glow-text {
+            text-shadow: 0 0 4px rgba(255, 176, 0, 0.6);
+        }
+        
+        .glow-box {
+            box-shadow: 0 0 10px rgba(255, 176, 0, 0.3), inset 0 0 5px rgba(255, 176, 0, 0.1);
+        }
+
+        /* Custom scrollbar to match theme */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0600; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #966300; 
+            border: 1px solid #FFB000;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-primary font-mono h-screen w-screen overflow-hidden selection:bg-primary selection:text-background-dark crt">
+<div class="relative flex h-full w-full flex-col items-center justify-between p-4 sm:p-8 animate-flicker">
+<!-- Background Bloom (Abstract) -->
+<div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-dim via-transparent to-transparent"></div>
+<!-- Header Section -->
+<header class="flex flex-col items-center justify-center w-full mt-8 sm:mt-16 z-10">
+<!-- Accessible Title -->
+<h1 class="sr-only">SUDOKU</h1>
+<!-- ASCII Logo -->
+<pre aria-hidden="true" class="glow-text text-[8px] sm:text-[10px] md:text-xs lg:text-sm leading-[1.1] font-bold text-primary select-none text-center" data-alt="ASCII art logo spelling SUDOKU in a retro heavy style"> ███████╗██╗   ██╗██████╗  ██████╗ ██╗  ██╗██╗   ██╗
+ ██╔════╝██║   ██║██╔══██╗██╔═══██╗██║ ██╔╝██║   ██║
+ ███████╗██║   ██║██║  ██║██║   ██║█████╔╝ ██║   ██║
+ ╚════██║██║   ██║██║  ██║██║   ██║██╔═██╗ ██║   ██║
+ ███████║╚██████╔╝██████╔╝╚██████╔╝██║  ██╗╚██████╔╝
+ ╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝
+            </pre>
+<div class="mt-4 text-primary-dim text-xs tracking-widest uppercase glow-text opacity-70">
+                // System Ready // Waiting for input_
+            </div>
+</header>
+<!-- Main Menu -->
+<main class="flex-1 flex flex-col items-center justify-center w-full max-w-md z-10 relative">
+<!-- Decorative Terminal Frame -->
+<div class="absolute -left-4 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1 opacity-50 text-primary-dim select-none">
+<span>│</span><span>│</span><span>│</span><span>│</span><span>│</span>
+</div>
+<div class="absolute -right-4 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-1 opacity-50 text-primary-dim select-none">
+<span>│</span><span>│</span><span>│</span><span>│</span><span>│</span>
+</div>
+<nav aria-label="Main Menu" class="w-full space-y-2">
+<!-- Menu Item: New Cycle (Active) -->
+<div class="group flex items-center gap-4 cursor-pointer">
+<div class="w-6 text-right font-bold text-primary-bright animate-blink select-none">
+                        &gt;
+                    </div>
+<button class="flex-1 text-left px-4 py-3 bg-primary text-background-dark font-bold tracking-wider shadow-[0_0_15px_rgba(255,176,0,0.5)] border-l-4 border-primary-bright uppercase transition-all">
+<span class="underline decoration-2 underline-offset-4">[N]</span>ew Cycle
+                    </button>
+<div class="w-6 text-primary-dim opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">terminal</span>
+</div>
+</div>
+<!-- Menu Item: Archives -->
+<div class="group flex items-center gap-4 cursor-pointer hover:opacity-100 opacity-70 transition-opacity">
+<div class="w-6 text-right font-bold text-primary-dim opacity-0 group-hover:opacity-100 select-none">
+                        &gt;
+                    </div>
+<button class="flex-1 text-left px-4 py-2 border border-transparent hover:border-primary-dim text-primary hover:text-primary-bright hover:bg-primary/10 tracking-wider uppercase transition-all">
+<span class="font-bold">[A]</span>rchives
+                    </button>
+<div class="w-6 text-primary-dim opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">history</span>
+</div>
+</div>
+<!-- Menu Item: Config -->
+<div class="group flex items-center gap-4 cursor-pointer hover:opacity-100 opacity-70 transition-opacity">
+<div class="w-6 text-right font-bold text-primary-dim opacity-0 group-hover:opacity-100 select-none">
+                        &gt;
+                    </div>
+<button class="flex-1 text-left px-4 py-2 border border-transparent hover:border-primary-dim text-primary hover:text-primary-bright hover:bg-primary/10 tracking-wider uppercase transition-all">
+<span class="font-bold">[C]</span>onfig
+                    </button>
+<div class="w-6 text-primary-dim opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">settings</span>
+</div>
+</div>
+<!-- Menu Item: Quit -->
+<div class="group flex items-center gap-4 cursor-pointer hover:opacity-100 opacity-70 transition-opacity">
+<div class="w-6 text-right font-bold text-primary-dim opacity-0 group-hover:opacity-100 select-none">
+                        &gt;
+                    </div>
+<button class="flex-1 text-left px-4 py-2 border border-transparent hover:border-primary-dim text-primary hover:text-primary-bright hover:bg-primary/10 tracking-wider uppercase transition-all">
+<span class="font-bold">[Q]</span>uit
+                    </button>
+<div class="w-6 text-primary-dim opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">power_settings_new</span>
+</div>
+</div>
+</nav>
+<!-- Decorative divider -->
+<div class="w-full border-b border-primary-dim border-dashed mt-8 opacity-50"></div>
+<!-- Controls Hint -->
+<div class="mt-4 flex justify-between w-full text-xs text-primary-dim">
+<div class="flex gap-2">
+<span class="border border-primary-dim px-1 rounded-sm">[↑/k]</span>
+<span class="border border-primary-dim px-1 rounded-sm">[↓/j]</span>
+<span>NAVIGATE</span>
+</div>
+<div class="flex gap-2">
+<span class="border border-primary-dim px-1 rounded-sm">[ENTER]</span>
+<span>SELECT</span>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full z-10">
+<div class="flex flex-col md:flex-row justify-between items-center text-xs text-primary-dim border-t-2 border-primary border-double pt-2 gap-2">
+<div class="flex gap-4">
+<span>STATUS: ONLINE</span>
+<span>MEM: 64KB OK</span>
+</div>
+<div class="flex flex-col items-center md:items-end">
+<span class="tracking-widest">v1.0.0-rc1</span>
+<span class="opacity-60">© 2024 RETRO SYSTEMS INC.</span>
+</div>
+</div>
+<!-- Scanline Animation Container (Visual only) -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden z-40 opacity-10">
+<div class="w-full h-1 bg-white opacity-20 absolute animate-scanline"></div>
+</div>
+</footer>
+</div>
+</body></html>

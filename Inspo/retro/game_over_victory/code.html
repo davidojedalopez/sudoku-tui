@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Phosphor Sudoku - System Restored</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;family=VT323&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FFB000", // Amber-500
+                        "primary-bright": "#FFD15C", // Amber-300
+                        "primary-dim": "#966300", // Amber-800
+                        "background-light": "#f8f7f5", // Unused but kept for config compatibility
+                        "background-dark": "#0A0600", // Near Black
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["VT323", "monospace"],
+                    },
+                    backgroundImage: {
+                        'scanlines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'blink': 'blink 1s steps(2, start) infinite',
+                        'sparkle-1': 'sparkle 2s infinite',
+                        'sparkle-2': 'sparkle 3s infinite 0.5s',
+                        'sparkle-3': 'sparkle 1.5s infinite 1s',
+                    },
+                    keyframes: {
+                        blink: {
+                            'to': { visibility: 'hidden' }
+                        },
+                        sparkle: {
+                            '0%, 100%': { opacity: '0' },
+                            '50%': { opacity: '1' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom CRT Effects */
+        .crt-glow {
+            text-shadow: 0 0 5px #FFB000, 0 0 10px #FFB000;
+        }
+        .crt-text-shadow {
+            text-shadow: 2px 2px 0px #966300;
+        }
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        .flicker {
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.99; }
+            100% { opacity: 0.9; }
+        }
+        /* ASCII Art Font Adjustment */
+        .ascii-art {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-mono overflow-hidden relative selection:bg-primary selection:text-background-dark">
+<!-- CRT Overlay Effects -->
+<div class="absolute inset-0 z-50 pointer-events-none scanlines mix-blend-overlay opacity-30"></div>
+<div class="absolute inset-0 z-40 pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(0,0,0,0.4)_100%)]"></div>
+<!-- Main Container -->
+<main class="relative flex flex-col items-center justify-center min-h-screen w-full p-4 z-10 flicker">
+<!-- Victory Heading (ASCII Art Simulation) -->
+<div class="mb-8 text-center relative group">
+<!-- Sparkles (Absolute positioned around the header) -->
+<div class="absolute -top-8 -left-12 text-primary animate-sparkle-1 select-none text-2xl">*</div>
+<div class="absolute top-0 -right-16 text-primary-bright animate-sparkle-2 select-none text-xl">+</div>
+<div class="absolute -bottom-4 left-1/4 text-primary animate-sparkle-3 select-none">.</div>
+<div class="absolute top-1/2 -right-8 text-primary-dim animate-pulse select-none text-sm">.:.</div>
+<pre aria-label="SYSTEM RESTORED" class="ascii-art text-[10px] sm:text-xs md:text-sm lg:text-base text-primary font-bold leading-none select-none crt-glow">   _____  __     __  _____  _______  ______   __  __ 
+  / ____| \ \   / / / ____| |__   __| |  ____| |  \/  |
+ | (___    \ \_/ /  | (___     | |    | |__    | \  / |
+  \___ \    \   /    \___ \    | |    |  __|   | |\/| |
+  ____) |    | |     ____) |   | |    | |____  | |  | |
+ |_____/     |_|    |_____/    |_|    |______| |_|  |_|
+                                                       
+  _____    ______    _____   _______    ____    _____   ______   _____  
+ |  __ \  |  ____|  / ____| |__   __|  / __ \  |  __ \ |  ____| |  __ \ 
+ | |__) | | |__    | (___      | |    | |  | | | |__) || |__    | |  | |
+ |  _  /  |  __|    \___ \     | |    | |  | | |  _  / |  __|    | |  | |
+ | | \ \  | |____   ____) |    | |    | |__| | | | \ \ | |____   | |__| |
+ |_|  \_\ |______| |_____/     |_|     \____/  |_|  \_\|______|  |_____/ 
+            </pre>
+<div class="mt-4 text-primary-bright tracking-[0.2em] uppercase text-sm md:text-base font-display">
+<span class="animate-blink mr-2">█</span>Sequence Completed Successfully
+            </div>
+</div>
+<!-- Stats Container -->
+<div class="relative w-full max-w-2xl bg-background-dark/80 backdrop-blur-sm border-2 border-primary shadow-[0_0_15px_rgba(255,176,0,0.15)] p-1">
+<!-- Decorative Corners -->
+<div class="absolute -top-1 -left-1 text-primary text-xl leading-none">╔</div>
+<div class="absolute -top-1 -right-1 text-primary text-xl leading-none">╗</div>
+<div class="absolute -bottom-1 -left-1 text-primary text-xl leading-none">╚</div>
+<div class="absolute -bottom-1 -right-1 text-primary text-xl leading-none">╝</div>
+<!-- Inner Content -->
+<div class="border border-primary-dim p-6 md:p-10 flex flex-col gap-8">
+<!-- Mission Report Header -->
+<div class="flex items-center justify-between border-b border-primary-dim pb-4">
+<h2 class="text-primary-bright font-display text-xl tracking-widest uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl">terminal</span>
+                        Mission Report
+                    </h2>
+<span class="text-primary-dim font-mono text-sm">ID: #8842-ALPHA</span>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Time -->
+<div class="flex flex-col gap-1 group">
+<span class="text-primary-dim text-xs uppercase tracking-wider font-display">Time Elapsed</span>
+<div class="flex items-end gap-3">
+<span class="text-4xl text-primary font-bold crt-glow">12<span class="text-xl">m</span> 30<span class="text-xl">s</span></span>
+<span class="mb-1 text-primary-dim text-sm font-mono opacity-0 group-hover:opacity-100 transition-opacity">[-0.5s]</span>
+</div>
+</div>
+<!-- Difficulty -->
+<div class="flex flex-col gap-1">
+<span class="text-primary-dim text-xs uppercase tracking-wider font-display">Difficulty Matrix</span>
+<div class="flex items-center gap-2">
+<span class="text-3xl text-primary font-bold">HARD</span>
+<div class="h-2 flex gap-1">
+<div class="w-2 h-2 bg-primary"></div>
+<div class="w-2 h-2 bg-primary"></div>
+<div class="w-2 h-2 bg-primary"></div>
+<div class="w-2 h-2 bg-primary-dim/30"></div>
+</div>
+</div>
+</div>
+<!-- Faults -->
+<div class="flex flex-col gap-1">
+<span class="text-primary-dim text-xs uppercase tracking-wider font-display">System Faults</span>
+<div class="text-3xl text-primary font-bold tracking-tight">0<span class="text-primary-dim">/</span>3</div>
+</div>
+<!-- Score -->
+<div class="flex flex-col gap-1">
+<span class="text-primary-dim text-xs uppercase tracking-wider font-display">Total Score</span>
+<div class="text-4xl text-primary-bright font-black crt-glow tracking-widest">9850</div>
+</div>
+</div>
+<!-- Divider -->
+<div class="h-px w-full bg-gradient-to-r from-transparent via-primary-dim to-transparent"></div>
+<!-- Footer / Prompt -->
+<div class="flex flex-col items-center gap-6 pt-2">
+<p class="text-primary-dim font-mono text-sm text-center">
+                        &gt; UPLOAD COMPLETE. AWAITING INPUT...
+                    </p>
+<div class="flex flex-wrap justify-center gap-4 md:gap-8 w-full">
+<button class="group flex flex-col items-center gap-1 focus:outline-none">
+<div class="px-6 py-2 border border-primary text-primary group-hover:bg-primary group-hover:text-background-dark transition-colors font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">replay</span>
+                                [R]eplay
+                            </div>
+<div class="h-1 w-0 bg-primary group-hover:w-full transition-all duration-300"></div>
+</button>
+<button class="group flex flex-col items-center gap-1 focus:outline-none">
+<div class="px-6 py-2 border border-primary text-primary bg-primary/10 group-hover:bg-primary group-hover:text-background-dark transition-colors font-bold uppercase tracking-wider text-sm flex items-center gap-2 shadow-[0_0_10px_rgba(255,176,0,0.2)]">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                                [N]ew Game
+                            </div>
+<div class="h-1 w-full bg-primary opacity-50 group-hover:opacity-100 transition-all"></div>
+</button>
+<button class="group flex flex-col items-center gap-1 focus:outline-none">
+<div class="px-6 py-2 border border-primary-dim text-primary-dim group-hover:border-primary group-hover:text-primary transition-colors font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">power_settings_new</span>
+                                [Q]uit
+                            </div>
+<div class="h-1 w-0 bg-primary group-hover:w-full transition-all duration-300"></div>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorative Particles (Static for visual context) -->
+<div class="absolute top-1/4 left-10 text-primary-dim/20 text-6xl select-none font-mono opacity-20 hidden lg:block">
+            0101
+        </div>
+<div class="absolute bottom-1/4 right-10 text-primary-dim/20 text-6xl select-none font-mono opacity-20 hidden lg:block">
+            0011
+        </div>
+<!-- Bottom status line -->
+<div class="fixed bottom-0 w-full bg-background-dark border-t border-primary-dim p-2 flex justify-between items-center text-xs text-primary-dim font-mono z-30">
+<div class="flex gap-4">
+<span>MEM: 64KB OK</span>
+<span>TERM: VT100</span>
+</div>
+<div class="flex gap-4">
+<span class="animate-pulse">CONNECTED</span>
+<span>v1.0.0-rc1</span>
+</div>
+</div>
+</main>
+<!-- Noise Texture Overlay (Optional subtle grain) -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-[60]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 opacity=%221%22/%3E%3C/svg%3E');"></div>
+</body></html>

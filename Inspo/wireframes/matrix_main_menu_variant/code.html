@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matrix Sudoku - Main Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#06f906",
+                        "background-light": "#f5f8f5",
+                        "background-dark": "#050a05", /* Darker background for Matrix feel */
+                        "matrix-dark": "#0d1f0d",
+                        "matrix-border": "#1a331a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "2px", "xl": "4px", "full": "9999px"}, /* Sharper edges for matrix feel */
+                    backgroundImage: {
+                        'matrix-grid': "linear-gradient(rgba(6, 249, 6, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 249, 6, 0.05) 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Matrix Scanline Effect */
+        .scanline {
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            opacity: 0.15;
+        }
+        
+        /* CRT Flicker Animation Attempt (Static CSS approximation) */
+        @keyframes textShadow {
+            0% { text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
+            5% { text-shadow: 2.7928974010788217px 0 1px rgba(0,30,255,0.5), -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
+            /* ... abbreviated for brevity, using static glow instead generally */
+        }
+
+        .glitch-text {
+            text-shadow: 0 0 5px rgba(6, 249, 6, 0.7);
+        }
+        
+        .matrix-bg {
+            background-color: #000;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(6, 249, 6, .03) 25%, rgba(6, 249, 6, .03) 26%, transparent 27%, transparent 74%, rgba(6, 249, 6, .03) 75%, rgba(6, 249, 6, .03) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(6, 249, 6, .03) 25%, rgba(6, 249, 6, .03) 26%, transparent 27%, transparent 74%, rgba(6, 249, 6, .03) 75%, rgba(6, 249, 6, .03) 76%, transparent 77%, transparent);
+            background-size: 30px 30px;
+        }
+
+        /* Custom scrollbar for Webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050a05; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a331a; 
+            border: 1px solid #06f906;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06f906; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-black">
+<div class="scanline"></div>
+<div class="relative flex min-h-screen w-full flex-col matrix-bg">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 bg-background-dark/90 px-4 sm:px-10 py-4 backdrop-blur-sm sticky top-0 z-50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6 animate-pulse">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">
+                        grid_4x4
+                    </span>
+</div>
+<h2 class="text-primary text-xl font-bold leading-tight tracking-[0.1em] uppercase drop-shadow-[0_0_8px_rgba(6,249,6,0.6)]">Matrix Sudoku</h2>
+</div>
+<div class="flex flex-1 justify-end gap-4 sm:gap-8 items-center">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-400 hover:text-primary transition-colors text-sm font-medium leading-normal uppercase tracking-widest" href="#">User_Profile</a>
+<a class="text-slate-400 hover:text-primary transition-colors text-sm font-medium leading-normal uppercase tracking-widest" href="#">Sys_Config</a>
+</nav>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden border border-primary/40 hover:border-primary rounded bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-300 gap-2 h-10 px-4 group">
+<span class="material-symbols-outlined text-[20px] group-hover:animate-spin">
+                        terminal
+                    </span>
+<span class="text-sm font-bold leading-normal tracking-widest hidden sm:block">TERMINAL</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="layout-container flex h-full grow flex-col justify-center items-center relative py-10 px-4">
+<!-- Background decoration elements -->
+<div class="absolute top-1/4 left-10 opacity-20 text-primary hidden lg:block select-none pointer-events-none font-mono text-xs">
+                &gt; INITIATING SEQUENCE...<br/>
+                &gt; LOADING ASSETS...<br/>
+                &gt; DECRYPTING...
+            </div>
+<div class="absolute bottom-1/4 right-10 opacity-20 text-primary hidden lg:block select-none pointer-events-none font-mono text-xs text-right">
+                SYS.32.45.1<br/>
+                MEM: 64TB<br/>
+                CPU: 12%
+            </div>
+<div class="layout-content-container flex flex-col max-w-[600px] w-full flex-1 z-20">
+<!-- Hero Text -->
+<div class="mb-12 text-center relative">
+<h1 class="text-primary tracking-[0.2em] text-4xl sm:text-6xl font-bold leading-tight px-4 pb-2 glitch-text uppercase">
+                        System Ready
+                    </h1>
+<div class="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto mb-4 opacity-50"></div>
+<p class="text-slate-400 text-sm sm:text-base font-normal leading-normal px-4 tracking-widest font-mono">
+<span class="text-primary mr-2">&gt;</span>SELECT DIFFICULTY PROTOCOL TO INITIATE SIMULATION
+                    </p>
+</div>
+<!-- Difficulty Buttons -->
+<div class="flex justify-center w-full mb-8">
+<div class="flex flex-1 gap-4 max-w-[480px] flex-col items-stretch px-4">
+<!-- Easy -->
+<button class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden border border-primary/50 bg-background-dark hover:bg-primary/10 transition-all duration-300 h-14 px-5">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+<div class="absolute right-0 top-0 h-full w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
+<span class="text-primary text-lg font-bold tracking-[0.15em] uppercase group-hover:text-white transition-colors">Initiate Easy</span>
+<span class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity text-primary material-symbols-outlined text-sm">chevron_right</span>
+</button>
+<!-- Medium -->
+<button class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden border border-primary/50 bg-background-dark hover:bg-primary/10 transition-all duration-300 h-14 px-5">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+<div class="absolute right-0 top-0 h-full w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
+<span class="text-primary text-lg font-bold tracking-[0.15em] uppercase group-hover:text-white transition-colors">Initiate Medium</span>
+<span class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity text-primary material-symbols-outlined text-sm">chevron_right</span>
+</button>
+<!-- Hard -->
+<button class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden border border-primary/50 bg-background-dark hover:bg-primary/10 transition-all duration-300 h-14 px-5">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+<div class="absolute right-0 top-0 h-full w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
+<span class="text-primary text-lg font-bold tracking-[0.15em] uppercase group-hover:text-white transition-colors">Initiate Hard</span>
+<span class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity text-primary material-symbols-outlined text-sm">chevron_right</span>
+</button>
+<!-- Expert -->
+<button class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden border border-primary bg-primary hover:bg-white transition-all duration-300 h-14 px-5 shadow-[0_0_15px_rgba(6,249,6,0.3)] hover:shadow-[0_0_25px_rgba(6,249,6,0.6)]">
+<span class="text-black text-lg font-bold tracking-[0.15em] uppercase">Initiate Expert</span>
+<span class="material-symbols-outlined ml-2 text-black animate-pulse text-lg">warning</span>
+</button>
+</div>
+</div>
+<!-- Load Save -->
+<div class="flex px-4 justify-center">
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center overflow-hidden border border-slate-700 hover:border-primary rounded bg-background-dark/50 hover:bg-primary/5 text-slate-400 hover:text-primary transition-all duration-300 h-12 px-6 gap-3 group">
+<span class="material-symbols-outlined text-[20px] group-hover:translate-y-1 transition-transform duration-300">
+                            download
+                        </span>
+<span class="text-sm font-bold tracking-[0.1em] uppercase">Load Save State</span>
+</button>
+</div>
+<!-- System Stats Footer (Decorative) -->
+<div class="mt-12 border-t border-primary/20 pt-4 px-4 flex justify-between text-[10px] text-primary/40 font-mono uppercase">
+<span>Server: NEO-TOKYO-03</span>
+<span>Latency: 12ms</span>
+<span>Secure Connection: ESTABLISHED</span>
+</div>
+</div>
+</main>
+</div>
+</body></html>

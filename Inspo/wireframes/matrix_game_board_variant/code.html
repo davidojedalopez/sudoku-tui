@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matrix Sudoku</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00FF41", /* Classic Matrix Green */
+                        "primary-dim": "#008F11", /* Dimmer Green for borders/text */
+                        "background-light": "#f0f2f0",
+                        "background-dark": "#0D0208", /* Very deep black-green */
+                        "surface-dark": "#001400", /* Slightly lighter black for panels */
+                        "accent-error": "#FF003C",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"],
+                        "mono": ["Courier New", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "2px", "lg": "4px", "xl": "8px", "full": "9999px"},
+                    boxShadow: {
+                        "neon": "0 0 5px theme('colors.primary'), 0 0 10px theme('colors.primary')",
+                        "neon-dim": "0 0 2px theme('colors.primary-dim')",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Matrix Digital Rain Effect Background */
+        .matrix-bg {
+            background-color: #000000;
+            background-image: linear-gradient(0deg, transparent 24%, rgba(0, 50, 0, .3) 25%, rgba(0, 50, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 50, 0, .3) 75%, rgba(0, 50, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 50, 0, .3) 25%, rgba(0, 50, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 50, 0, .3) 75%, rgba(0, 50, 0, .3) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+        }
+        
+        /* Scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #003b00;
+            border-radius: 0;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00FF41;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-primary min-h-screen flex flex-col overflow-x-hidden matrix-bg selection:bg-primary selection:text-black">
+<div class="scanlines"></div>
+<!-- Main Layout -->
+<div class="layout-container flex h-full grow flex-col relative z-10">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-primary/30 bg-surface-dark/90 backdrop-blur-sm px-4 md:px-10 py-4 sticky top-0 z-40 shadow-neon-dim">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6 animate-pulse">
+<span class="material-symbols-outlined text-2xl">grid_4x4</span>
+</div>
+<h2 class="text-primary text-xl font-bold leading-tight tracking-[0.1em] font-mono">MATRIX_SUDOKU_V2.4</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 hidden md:flex">
+<div class="flex items-center gap-9 font-mono text-xs">
+<a class="text-primary/70 hover:text-primary hover:shadow-neon transition-all" href="#">[ SYSTEM ]</a>
+<a class="text-primary/70 hover:text-primary hover:shadow-neon transition-all" href="#">[ USER ]</a>
+<a class="text-primary/70 hover:text-primary hover:shadow-neon transition-all" href="#">[ LOGS ]</a>
+<a class="text-primary/70 hover:text-primary hover:shadow-neon transition-all" href="#">[ EXIT ]</a>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center overflow-hidden rounded-sm h-9 px-6 bg-primary text-black text-xs font-bold leading-normal tracking-widest hover:bg-white transition-colors">
+                        EXECUTE
+                    </button>
+<button class="flex items-center justify-center overflow-hidden rounded-sm h-9 px-6 border border-primary text-primary bg-transparent text-xs font-bold leading-normal tracking-widest hover:bg-primary/10 transition-colors">
+                        CONFIG
+                    </button>
+</div>
+</div>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<div class="px-4 md:px-10 flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col lg:flex-row max-w-[1280px] w-full gap-8">
+<!-- Left Sidebar / Controls -->
+<div class="flex flex-col gap-6 lg:w-80 shrink-0 order-2 lg:order-1">
+<!-- Profile / Status -->
+<div class="flex gap-4 p-4 border border-primary/20 bg-surface-dark/80 rounded-sm">
+<div class="bg-center bg-no-repeat bg-cover rounded-sm size-12 border border-primary/50 grayscale contrast-125" data-alt="Hacker silhouette in green light" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbZPj4EDwEqKFtVk-SILeVZn9ZlznQRg9E7us52G_F1MBQ7fc6ZvIai39v6rKl5jwpDwIr6or_HeFgzrTU80pm_QH7bC2xlIgir79pXJM2nYbhyJcsFCOn6fRb7Z_T28_pR4ZNpg37MEnyiOCETZp2nbyZHJW9dU2GnXhByHl7naEJCdLvxK2oGQRqZi2u4G-tIyQhg_9hEMmTlRJt8EwcuFtYr-JqJ4hpJz0XO2Bb-qxfdEKQv8B8YoMfv9i4uofTTkv7RwpI5J8d");'></div>
+<div class="flex flex-col justify-center font-mono">
+<h1 class="text-primary text-lg font-bold leading-none mb-1">OPERATOR_NEO</h1>
+<p class="text-primary/60 text-xs">ACCESS_LEVEL: ADMIN</p>
+</div>
+</div>
+<!-- Command Center -->
+<div class="flex flex-col gap-3 p-4 border border-primary/20 bg-surface-dark/50 rounded-sm font-mono text-sm">
+<h3 class="text-primary/50 text-xs mb-2 border-b border-primary/20 pb-1">COMMAND_PROTOCOL</h3>
+<button class="group flex items-center gap-3 px-3 py-3 rounded-sm hover:bg-primary/20 transition-all border border-transparent hover:border-primary/40 text-left">
+<span class="material-symbols-outlined text-primary group-hover:animate-pulse">terminal</span>
+<span class="text-primary font-medium">&gt; INITIALIZE_NEW_GRID</span>
+</button>
+<button class="group flex items-center gap-3 px-3 py-3 rounded-sm hover:bg-primary/20 transition-all border border-transparent hover:border-primary/40 text-left">
+<span class="material-symbols-outlined text-primary group-hover:rotate-180 transition-transform duration-700">restart_alt</span>
+<span class="text-primary font-medium">&gt; REBOOT_PROCESS</span>
+</button>
+<button class="group flex items-center gap-3 px-3 py-3 rounded-sm hover:bg-primary/20 transition-all border border-transparent hover:border-primary/40 text-left">
+<span class="material-symbols-outlined text-primary">undo</span>
+<span class="text-primary font-medium">&gt; ROLLBACK_ACTION</span>
+</button>
+<button class="group flex items-center gap-3 px-3 py-3 rounded-sm hover:bg-primary/20 transition-all border border-transparent hover:border-primary/40 text-left">
+<span class="material-symbols-outlined text-primary group-hover:text-white">lightbulb</span>
+<span class="text-primary font-medium">&gt; DECRYPT_HINT</span>
+</button>
+</div>
+<!-- Stats Panel -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between p-3 border border-primary/20 bg-surface-dark/80 rounded-sm">
+<span class="text-primary/70 text-xs font-mono">UPTIME</span>
+<span class="text-primary text-xl font-bold font-mono tracking-wider">00:14:32</span>
+</div>
+<div class="flex items-center justify-between p-3 border border-primary/20 bg-surface-dark/80 rounded-sm">
+<span class="text-primary/70 text-xs font-mono">ANOMALIES</span>
+<span class="text-accent-error text-xl font-bold font-mono">0/3</span>
+</div>
+<div class="flex flex-col gap-1 p-3 border border-primary/20 bg-surface-dark/80 rounded-sm">
+<div class="flex justify-between items-end mb-1">
+<span class="text-primary/70 text-xs font-mono">DECRYPTION</span>
+<span class="text-primary text-sm font-bold font-mono">45%</span>
+</div>
+<div class="w-full bg-primary/10 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[45%] shadow-[0_0_10px_theme('colors.primary')]"></div>
+</div>
+</div>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-sm h-12 px-4 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300 text-sm font-bold leading-normal tracking-widest mt-auto shadow-neon-dim hover:shadow-neon">
+<span class="truncate blink">RUN_DIAGNOSTIC_TOOL</span>
+</button>
+</div>
+<!-- Main Game Area -->
+<div class="flex flex-col flex-1 gap-6 order-1 lg:order-2">
+<!-- Header Text -->
+<div class="flex flex-col gap-1">
+<div class="flex items-end gap-2">
+<span class="material-symbols-outlined text-primary text-3xl animate-spin" style="animation-duration: 3s;">data_usage</span>
+<h1 class="text-primary text-4xl font-black leading-tight tracking-tight font-display">GRID_SEQUENCE</h1>
+</div>
+<p class="text-primary/60 text-sm font-mono uppercase tracking-widest pl-1">DIFFICULTY: HARDCORE // MODE: SIMULATION</p>
+</div>
+<!-- Sudoku Grid Container -->
+<div class="relative w-full aspect-square max-w-[650px] mx-auto bg-black p-1 border-2 border-primary shadow-[0_0_30px_rgba(0,255,65,0.15)] rounded-sm">
+<!-- Grid Overlay Effects -->
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,255,65,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none z-0"></div>
+<!-- The 9x9 Grid -->
+<div class="grid grid-cols-9 grid-rows-9 h-full w-full gap-px bg-primary-dim border border-primary-dim relative z-10">
+<!-- 3x3 Block Borders (Simulated with thicker borders on specific cells) -->
+<!-- We will generate cells. Cells with thicker borders create the 3x3 visual blocks -->
+<!-- Row 1 -->
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">5</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">3</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer">6</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">7</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary">8</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer">2</div>
+<!-- Row 2 -->
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">6</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary">1</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">9</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">5</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer">8</div>
+<!-- Row 3 -->
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary">9</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary border-b-2 border-b-primary">8</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary">6</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<!-- Row 4 -->
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">8</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">6</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">3</div>
+<!-- Row 5 (Center Selected) -->
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">4</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">8</div>
+<!-- Selected Cell -->
+<div class="bg-primary/30 shadow-[inset_0_0_15px_theme('colors.primary')] flex items-center justify-center text-white text-3xl font-mono font-black animate-pulse cursor-pointer border border-primary relative">
+                                4
+                                <div class="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-primary"></div>
+</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary">3</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">1</div>
+<!-- Row 6 -->
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary">7</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary">2</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-b-2 border-b-primary">6</div>
+<!-- Row 7 -->
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">6</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">2</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">8</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<!-- Row 8 -->
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">4</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">1</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary">9</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">5</div>
+<!-- Row 9 -->
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">8</div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer border-r-2 border-r-primary"></div>
+<div class="bg-black flex items-center justify-center text-primary/30 text-2xl font-mono hover:bg-primary/20 cursor-pointer"></div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">7</div>
+<div class="bg-black flex items-center justify-center text-primary text-2xl font-mono font-bold hover:bg-primary/20 cursor-pointer">9</div>
+</div>
+</div>
+<!-- Number Pad -->
+<div class="grid grid-cols-9 gap-2 mt-4 max-w-[650px] mx-auto w-full">
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">1</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">2</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">3</button>
+<button class="aspect-square bg-primary text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon scale-105">4</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">5</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">6</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">7</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">8</button>
+<button class="aspect-square bg-black border border-primary text-primary hover:bg-primary hover:text-black font-mono text-xl font-bold rounded-sm transition-all shadow-neon-dim hover:shadow-neon">9</button>
+</div>
+<!-- Keyboard hints -->
+<div class="flex justify-between max-w-[650px] mx-auto w-full px-2 mt-2 text-primary/40 font-mono text-xs">
+<span>[DEL] CLEAR</span>
+<span>[SPACE] NOTES</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer / Console -->
+<div class="px-10 py-4 border-t border-primary/20 bg-black text-primary/70 font-mono text-xs flex justify-between items-center">
+<div class="flex gap-4">
+<span>SERVER: ZION_MAIN_FRAME</span>
+<span>PING: 12ms</span>
+</div>
+<div class="animate-pulse">_</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matrix Sudoku Main Menu</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0bda0b",
+                        "background-light": "#f5f8f5",
+                        "background-dark": "#050a05",
+                        "matrix-green": "#0bda0b",
+                        "matrix-dark": "#0a110a",
+                        "matrix-glow": "rgba(11, 218, 11, 0.4)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                    boxShadow: {
+                        "glow": "0 0 10px rgba(11, 218, 11, 0.2), 0 0 20px rgba(11, 218, 11, 0.1)",
+                        "glow-strong": "0 0 15px rgba(11, 218, 11, 0.5), 0 0 30px rgba(11, 218, 11, 0.3)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050a05;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #153315;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1f4f1f;
+        }
+        
+        /* Subtle scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* CRT flicker animation simulation (static) */
+        @keyframes textShadow {
+            0% { text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
+            5% { text-shadow: 2.7928974010788217px 0 1px rgba(0,30,255,0.5), -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
+            100% { text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
+        }
+        
+        .crt-text {
+            animation: textShadow 2s infinite;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-black">
+<div class="scanlines"></div>
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Background Pattern -->
+<div class="fixed inset-0 z-0 opacity-10 pointer-events-none" data-alt="Subtle falling digital rain matrix code background pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCJVunnXWIkUsy1Y1THv8xJX2Fa5u5SudDJkJfCR0n_cvhCM6EJ3K8JcTjtCHOuqwcUWhYZdszYI2KCJW7f4qbB_-qsVUdH8DK62fBWPqFmHKE_STajA_i0Fks8KHCZZitLkHXTMyuvrGho0Yvkzc6yi6jrAYyDQve56fJ8eZIdr8s5CjYAKBKIx4Y6jvJbq-sclfLM02H2FGAWg6hzmJwcrZNsV9Vx2I2CtyqH-zknGTfRJg9ftwS3VTMhzBql895ohHd5TASzFLUx'); background-repeat: repeat; background-size: 400px;"></div>
+<!-- Header -->
+<header class="relative z-10 flex items-center justify-between whitespace-nowrap border-b border-primary/20 bg-background-dark/80 backdrop-blur-md px-6 py-4 lg:px-12">
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary animate-pulse">
+<span class="material-symbols-outlined text-3xl">terminal</span>
+</div>
+<h2 class="text-primary text-xl font-bold tracking-widest uppercase shadow-primary drop-shadow-[0_0_5px_rgba(11,218,11,0.5)]">Matrix Sudoku</h2>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center justify-center overflow-hidden rounded border border-primary/30 bg-transparent hover:bg-primary/10 transition-colors h-10 px-6 text-primary text-sm font-bold tracking-wider uppercase">
+<span class="truncate">Log In</span>
+</button>
+<button class="flex items-center justify-center overflow-hidden rounded bg-primary hover:bg-[#09b009] hover:shadow-glow transition-all h-10 px-6 text-black text-sm font-bold tracking-wider uppercase">
+<span class="truncate">Initialize</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="relative z-10 flex flex-1 flex-col items-center justify-center py-10 px-4">
+<div class="w-full max-w-[800px] flex flex-col gap-10">
+<!-- Hero Image / Quote -->
+<div class="relative w-full overflow-hidden rounded-lg border border-primary/30 shadow-glow bg-black group">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+<div class="absolute inset-0 bg-primary/5 z-20 mix-blend-overlay"></div>
+<div class="h-64 sm:h-80 w-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-700" data-alt="Abstract green digital tunnel representing the matrix code" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8raImilPV8kW4ImP5XVvn50Uo6I6fTYqTKUFCStcaf53DGpz32nPLXsQozqYo3xiONGrWWYhJtMijnnN4RALMEcrfar5iPc-VdS8fHFfV38zl39FV8ssuBd_8qIMIXlq_7zzmql-sS3Kq85SomnGtZ4QJvU96FfBdj6UTS1sH861R-OJVnhJh6HF4XzDkuvA3_PSr3hJmloQTHBzW4_SFZc7MFhuNk4oSsHZMz72lP_oIwLW1hWG6q5oDO1K8K5Xpc-qMX5p5Os-H");'>
+</div>
+<div class="absolute bottom-0 left-0 p-8 z-30">
+<p class="text-primary font-bold text-3xl sm:text-4xl tracking-tighter drop-shadow-md crt-text mb-2">WAKE UP, NEO...</p>
+<p class="text-primary/70 text-sm font-mono tracking-widest uppercase typing-effect border-r-2 border-primary pr-2 animate-pulse">The Grid has you.</p>
+</div>
+</div>
+<!-- Title Section -->
+<div class="text-center space-y-2">
+<h1 class="text-4xl md:text-6xl font-bold text-slate-100 tracking-tight uppercase">
+                        The <span class="text-primary drop-shadow-[0_0_8px_rgba(11,218,11,0.8)]">Grid</span> Awaits
+                    </h1>
+<p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base">Decipher the code. Restore the balance. Free your mind.</p>
+</div>
+<!-- Difficulty Selection Radio Group -->
+<div class="flex flex-wrap justify-center gap-4 px-2">
+<label class="group relative cursor-pointer">
+<input checked="" class="peer sr-only" name="difficulty" type="radio" value="novice"/>
+<div class="flex items-center justify-center rounded border border-primary/30 bg-background-dark px-6 py-3 text-sm font-medium text-slate-300 transition-all peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-glow hover:border-primary/60">
+<span class="mr-2 material-symbols-outlined text-[18px]">adjust</span>
+                            Novice Program
+                        </div>
+</label>
+<label class="group relative cursor-pointer">
+<input class="peer sr-only" name="difficulty" type="radio" value="agent"/>
+<div class="flex items-center justify-center rounded border border-primary/30 bg-background-dark px-6 py-3 text-sm font-medium text-slate-300 transition-all peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-glow hover:border-primary/60">
+<span class="mr-2 material-symbols-outlined text-[18px]">security</span>
+                            Agent Level
+                        </div>
+</label>
+<label class="group relative cursor-pointer">
+<input class="peer sr-only" name="difficulty" type="radio" value="theone"/>
+<div class="flex items-center justify-center rounded border border-primary/30 bg-background-dark px-6 py-3 text-sm font-medium text-slate-300 transition-all peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:shadow-glow hover:border-primary/60">
+<span class="mr-2 material-symbols-outlined text-[18px]">visibility</span>
+                            The One Difficulty
+                        </div>
+</label>
+</div>
+<!-- Main Menu Actions -->
+<div class="grid gap-4 max-w-md mx-auto w-full">
+<button class="group relative flex w-full items-center justify-between overflow-hidden rounded bg-primary px-6 py-4 transition-all hover:bg-[#09b009] hover:shadow-glow-strong">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-black group-hover:rotate-90 transition-transform duration-500">grid_4x4</span>
+<span class="text-black text-lg font-bold tracking-widest uppercase">Enter The Grid</span>
+</div>
+<span class="material-symbols-outlined text-black opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">arrow_forward</span>
+</button>
+<button class="group relative flex w-full items-center justify-start gap-3 overflow-hidden rounded border border-primary/30 bg-transparent px-6 py-3 transition-all hover:border-primary hover:bg-primary/10">
+<span class="material-symbols-outlined text-primary">history</span>
+<span class="text-primary text-base font-bold tracking-widest uppercase">The Archives</span>
+</button>
+<button class="group relative flex w-full items-center justify-start gap-3 overflow-hidden rounded border border-primary/30 bg-transparent px-6 py-3 transition-all hover:border-primary hover:bg-primary/10">
+<span class="material-symbols-outlined text-primary">settings_suggest</span>
+<span class="text-primary text-base font-bold tracking-widest uppercase">System Settings</span>
+</button>
+<button class="group relative flex w-full items-center justify-start gap-3 overflow-hidden rounded border border-red-500/30 bg-transparent px-6 py-3 transition-all hover:border-red-500 hover:bg-red-500/10">
+<span class="material-symbols-outlined text-red-500/80 group-hover:text-red-500">power_settings_new</span>
+<span class="text-red-500/80 group-hover:text-red-500 text-base font-bold tracking-widest uppercase">Exit Simulation</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer / Status Bar -->
+<footer class="relative z-10 border-t border-primary/20 bg-background-dark/90 px-6 py-2 text-xs text-primary/60 font-mono flex justify-between items-center">
+<div class="flex gap-4">
+<span class="flex items-center gap-1">
+<span class="block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    SYSTEM ONLINE
+                </span>
+<span class="hidden sm:inline">V.2.1.0-BETA</span>
+</div>
+<div class="flex gap-4 uppercase tracking-widest">
+<span>Latency: 3ms</span>
+<span class="hidden sm:inline">Encryption: 256-bit</span>
+</div>
+</footer>
+</div>
+</body></html>

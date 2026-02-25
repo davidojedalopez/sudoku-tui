@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matrix Sudoku - Victory</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom Matrix Rain Effect Background */
+        .matrix-bg {
+            background-color: #102216;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(13, 242, 89, .05) 25%, rgba(13, 242, 89, .05) 26%, transparent 27%, transparent 74%, rgba(13, 242, 89, .05) 75%, rgba(13, 242, 89, .05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(13, 242, 89, .05) 25%, rgba(13, 242, 89, .05) 26%, transparent 27%, transparent 74%, rgba(13, 242, 89, .05) 75%, rgba(13, 242, 89, .05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px rgba(13, 242, 89, 0.7), 0 0 20px rgba(13, 242, 89, 0.5);
+        }
+
+        .terminal-border {
+            box-shadow: 0 0 15px rgba(13, 242, 89, 0.2), inset 0 0 15px rgba(13, 242, 89, 0.1);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark min-h-screen flex flex-col overflow-hidden relative">
+<!-- Background effects -->
+<div class="fixed inset-0 matrix-bg pointer-events-none z-0"></div>
+<div class="fixed inset-0 bg-gradient-to-t from-background-dark via-transparent to-background-dark pointer-events-none z-0"></div>
+<div class="scanlines"></div>
+<!-- Main Content Wrapper -->
+<div class="relative z-20 flex h-full grow flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-primary/20 bg-background-dark/80 backdrop-blur-sm px-6 lg:px-10 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6 animate-pulse">
+<span class="material-symbols-outlined !text-2xl">grid_4x4</span>
+</div>
+<h2 class="text-primary text-xl font-bold leading-tight tracking-wider uppercase glow-text">Matrix Sudoku</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-300 hover:text-primary transition-colors text-sm font-medium leading-normal tracking-wide uppercase" href="#">Home</a>
+<a class="text-slate-300 hover:text-primary transition-colors text-sm font-medium leading-normal tracking-wide uppercase" href="#">Leaderboard</a>
+<a class="text-slate-300 hover:text-primary transition-colors text-sm font-medium leading-normal tracking-wide uppercase" href="#">Settings</a>
+</nav>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-primary/50" data-alt="User avatar profile picture pixel art style" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtIWon4UtNtUfHRpvswMBVeiCX0jAUlx1IwPTKwEtHA55MEEy2fDQ0o-ARQ4sJiC7HlojOgbAUHLB7EuGP9d66OtR-y8kWltGFJ6t_2VhohUdGoZ5ANq0bBJnbRh9kKSOBwVsnFD1j15hOIWHRupzWdffI-wPxwFdM_lIINxxCf7a27k7oIRbZkV7NGszaljKCEUONXTH-C18R1nnZMT9Q2mtCI3Pl0_TjjPaEF4LwvuNsIFTk6doe4f0XYPTR373PO6GCFtLrGFKH");'>
+</div>
+</div>
+</header>
+<!-- Main Victory Content -->
+<main class="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 relative">
+<!-- Central Victory Card -->
+<div class="w-full max-w-4xl bg-background-dark/90 border border-primary/30 rounded-lg p-8 lg:p-12 terminal-border backdrop-blur-md relative overflow-hidden group">
+<!-- Decorative Corner Accents -->
+<div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+<!-- Content -->
+<div class="flex flex-col items-center text-center space-y-8">
+<div class="space-y-2">
+<div class="inline-flex items-center gap-2 text-primary/80 mb-4 animate-bounce">
+<span class="material-symbols-outlined">verified</span>
+<span class="text-sm font-bold tracking-widest uppercase">Encryption Broken</span>
+</div>
+<h1 class="text-primary tracking-widest text-4xl md:text-6xl lg:text-7xl font-bold leading-tight uppercase glow-text">
+                            You Are The One
+                        </h1>
+<p class="text-primary/60 text-lg font-mono mt-4 max-w-2xl mx-auto">
+                            System anomaly detected. Simulation successfully overridden. The grid has been liberated.
+                        </p>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-8">
+<!-- Stat 1 -->
+<div class="bg-black/40 border border-primary/20 p-6 rounded relative overflow-hidden group hover:border-primary/60 transition-colors">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
+<span class="material-symbols-outlined text-primary text-4xl">timer</span>
+</div>
+<p class="text-primary/70 text-xs font-mono mb-1 uppercase tracking-widest">Completion Time</p>
+<p class="text-white text-3xl md:text-4xl font-bold tracking-tighter tabular-nums font-mono">14:02</p>
+<div class="w-full bg-primary/10 h-1 mt-4 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-3/4 shadow-[0_0_10px_rgba(13,242,89,0.8)]"></div>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="bg-black/40 border border-primary/20 p-6 rounded relative overflow-hidden group hover:border-primary/60 transition-colors">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
+<span class="material-symbols-outlined text-primary text-4xl">target</span>
+</div>
+<p class="text-primary/70 text-xs font-mono mb-1 uppercase tracking-widest">Accuracy</p>
+<p class="text-white text-3xl md:text-4xl font-bold tracking-tighter tabular-nums font-mono">98%</p>
+<div class="w-full bg-primary/10 h-1 mt-4 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[98%] shadow-[0_0_10px_rgba(13,242,89,0.8)]"></div>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="bg-black/40 border border-primary/20 p-6 rounded relative overflow-hidden group hover:border-primary/60 transition-colors">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
+<span class="material-symbols-outlined text-primary text-4xl">psychology</span>
+</div>
+<p class="text-primary/70 text-xs font-mono mb-1 uppercase tracking-widest">Difficulty</p>
+<p class="text-white text-3xl md:text-4xl font-bold tracking-tighter uppercase font-mono">Master</p>
+<div class="flex gap-1 mt-4">
+<div class="h-1 w-full bg-primary shadow-[0_0_5px_rgba(13,242,89,0.8)]"></div>
+<div class="h-1 w-full bg-primary shadow-[0_0_5px_rgba(13,242,89,0.8)]"></div>
+<div class="h-1 w-full bg-primary shadow-[0_0_5px_rgba(13,242,89,0.8)]"></div>
+<div class="h-1 w-full bg-primary shadow-[0_0_5px_rgba(13,242,89,0.8)]"></div>
+</div>
+</div>
+</div>
+<!-- Terminal Log Aesthetic -->
+<div class="w-full bg-black/60 border-l-2 border-primary/40 p-4 font-mono text-xs md:text-sm text-left h-32 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+<div class="space-y-1 text-primary/80">
+<p>&gt; Initializing victory sequence...</p>
+<p>&gt; User authenticated: NEO_7734</p>
+<p>&gt; Uploading results to main server... [DONE]</p>
+<p>&gt; Analyzing grid patterns... Complexity: HIGH</p>
+<p class="text-white">&gt; Achievement Unlocked: "There is no spoon"</p>
+<p class="animate-pulse">&gt; Waiting for user input_</p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 w-full max-w-md mx-auto pt-6">
+<button class="group flex-1 relative overflow-hidden rounded h-14 bg-primary hover:bg-green-400 transition-all duration-300">
+<div class="absolute inset-0 flex items-center justify-center text-background-dark font-bold text-lg tracking-wider uppercase z-10 gap-2">
+<span class="material-symbols-outlined">refresh</span>
+                                Re-Enter The Grid
+                            </div>
+<!-- Button Glitch Effect Overlay -->
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+</button>
+<button class="group flex-1 relative overflow-hidden rounded h-14 bg-transparent border border-primary text-primary hover:bg-primary/10 transition-all duration-300">
+<div class="flex items-center justify-center h-full w-full font-bold text-lg tracking-wider uppercase gap-2">
+<span class="material-symbols-outlined">logout</span>
+                                Exit to Source
+                            </div>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Quote -->
+<div class="mt-12 text-center opacity-60">
+<p class="text-primary/40 text-xs tracking-[0.2em] uppercase">"I can only show you the door. You're the one that has to walk through it."</p>
+</div>
+</main>
+</div>
+</body></html>

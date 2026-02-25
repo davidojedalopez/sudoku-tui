@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Phosphor Sudoku - The Archives</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2aa0d",
+                        "primary-dim": "#966300",
+                        "primary-bright": "#FFD15C",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#0A0600", // Adjusted to match the "Void" description
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                    backgroundImage: {
+                        'scanlines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for Webkit */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #221c10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #966300;
+            border: 2px solid #221c10;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f2aa0d;
+        }
+        
+        /* CRT Flicker Animation */
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.99; }
+            25% { opacity: 0.95; }
+            30% { opacity: 0.9; }
+            35% { opacity: 0.96; }
+            40% { opacity: 0.98; }
+            45% { opacity: 0.95; }
+            50% { opacity: 0.99; }
+            55% { opacity: 0.93; }
+            60% { opacity: 0.9; }
+            65% { opacity: 0.96; }
+            70% { opacity: 1; }
+            75% { opacity: 0.97; }
+            80% { opacity: 0.95; }
+            85% { opacity: 0.92; }
+            90% { opacity: 0.96; }
+            95% { opacity: 0.99; }
+            100% { opacity: 0.94; }
+        }
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+            pointer-events: none; 
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: rgba(242, 170, 13, 0.02);
+            z-index: 50;
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: 40;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-background-dark">
+<!-- CRT Effects -->
+<div class="scanlines"></div>
+<div class="crt-flicker"></div>
+<div class="relative z-10 flex h-screen w-full flex-col p-4 md:p-8 lg:p-12">
+<!-- Main Terminal Container -->
+<div class="flex flex-1 flex-col border-2 border-primary border-double relative bg-background-dark/90 shadow-[0_0_20px_rgba(242,170,13,0.15)]">
+<!-- Corner Decorations -->
+<div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+<div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 p-6 border-b border-primary/30">
+<div class="flex flex-col gap-1">
+<h1 class="text-primary text-4xl md:text-5xl font-bold tracking-tight uppercase leading-none" style="text-shadow: 0 0 10px rgba(242,170,13,0.5);">
+                        // SYSTEM ARCHIVES
+                    </h1>
+<div class="flex items-center gap-2 text-primary-dim text-sm tracking-widest uppercase">
+<span class="material-symbols-outlined text-sm">database</span>
+<span>User_Log_Sequence_0042</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="group flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary hover:text-background-dark transition-colors rounded-sm uppercase text-sm font-medium tracking-wide">
+<span class="material-symbols-outlined text-lg">keyboard_return</span>
+<span class="hidden sm:inline">[ESC] BACK TO MENU</span>
+<span class="sm:hidden">BACK</span>
+</button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="flex-1 overflow-hidden flex flex-col p-4 md:p-6">
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-4 pb-3 border-b-2 border-primary text-primary-bright font-bold tracking-wider text-sm uppercase px-2">
+<div class="col-span-3 hidden md:block">Date (UTC)</div>
+<div class="col-span-5 md:col-span-3">Difficulty</div>
+<div class="col-span-3 md:col-span-2">Time</div>
+<div class="col-span-4 md:col-span-2 text-center">Result</div>
+<div class="col-span-2 hidden md:block text-right">Faults</div>
+</div>
+<!-- Table Body (Scrollable) -->
+<div class="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+<!-- Row 1 (Latest - Highlighted) -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary/80 font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-24 14:02
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary text-primary text-xs font-bold uppercase tracking-widest rounded-sm bg-primary/5">
+                                [ HARD ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-bright font-mono text-sm">12m 30s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary font-bold tracking-wide text-sm flex items-center justify-center gap-1" style="text-shadow: 0 0 8px rgba(242,170,13,0.4);">
+<span class="material-symbols-outlined text-sm">check_circle</span> SUCCESS
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/60 font-mono">0</div>
+</div>
+<!-- Row 2 -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary-dim font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-23 09:15
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary-dim text-primary-dim text-xs font-bold uppercase tracking-widest rounded-sm">
+                                [ EXPERT ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-dim font-mono text-sm">04m 12s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary-dim font-medium tracking-wide text-sm flex items-center justify-center gap-1 line-through decoration-primary-dim/50">
+<span class="material-symbols-outlined text-sm">cancel</span> FAILURE
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/40 font-mono">3</div>
+</div>
+<!-- Row 3 -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary-dim font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-22 21:45
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary-dim text-primary-dim text-xs font-bold uppercase tracking-widest rounded-sm">
+                                [ MEDIUM ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-dim font-mono text-sm">08m 55s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary-dim font-medium tracking-wide text-sm flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span> SUCCESS
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/40 font-mono">1</div>
+</div>
+<!-- Row 4 -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary-dim font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-20 18:22
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary-dim text-primary-dim text-xs font-bold uppercase tracking-widest rounded-sm">
+                                [ MEDIUM ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-dim font-mono text-sm">07m 10s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary-dim font-medium tracking-wide text-sm flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span> SUCCESS
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/40 font-mono">0</div>
+</div>
+<!-- Row 5 -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary-dim font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-18 12:05
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary-dim text-primary-dim text-xs font-bold uppercase tracking-widest rounded-sm">
+                                [ EASY ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-dim font-mono text-sm">03m 45s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary-dim font-medium tracking-wide text-sm flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span> SUCCESS
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/40 font-mono">0</div>
+</div>
+<!-- Row 6 -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary-dim font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-17 23:11
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary-dim text-primary-dim text-xs font-bold uppercase tracking-widest rounded-sm">
+                                [ HARD ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-dim font-mono text-sm">15m 20s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary-dim font-medium tracking-wide text-sm flex items-center justify-center gap-1 line-through decoration-primary-dim/50">
+<span class="material-symbols-outlined text-sm">cancel</span> FAILURE
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/40 font-mono">4</div>
+</div>
+<!-- Row 7 -->
+<div class="group grid grid-cols-12 gap-4 py-3 border-b border-primary/10 hover:bg-primary/10 transition-colors items-center px-2 cursor-pointer">
+<div class="col-span-3 hidden md:flex items-center gap-2 text-primary-dim font-mono text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            2023-10-15 08:30
+                        </div>
+<div class="col-span-5 md:col-span-3">
+<span class="inline-block px-2 py-0.5 border border-primary-dim text-primary-dim text-xs font-bold uppercase tracking-widest rounded-sm">
+                                [ MEDIUM ]
+                            </span>
+</div>
+<div class="col-span-3 md:col-span-2 text-primary-dim font-mono text-sm">09m 12s</div>
+<div class="col-span-4 md:col-span-2 text-center">
+<span class="text-primary-dim font-medium tracking-wide text-sm flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span> SUCCESS
+                            </span>
+</div>
+<div class="col-span-2 hidden md:block text-right text-primary/40 font-mono">0</div>
+</div>
+<!-- Scroll Indicator / More Data Hint -->
+<div class="text-center py-4 text-primary-dim/50 text-xs tracking-widest uppercase animate-pulse">
+                        /// END OF BUFFER ///
+                    </div>
+</div>
+</div>
+<!-- Footer Stats -->
+<div class="border-t border-primary/30 p-6 bg-background-dark">
+<div class="flex flex-wrap gap-4">
+<!-- Stat 1 -->
+<div class="flex min-w-[158px] flex-1 flex-col gap-1 rounded p-4 border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary transition-all group">
+<p class="text-primary-dim text-xs font-bold tracking-widest uppercase group-hover:text-primary transition-colors">Total Records</p>
+<p class="text-primary tracking-tight text-3xl font-bold leading-tight font-mono">42</p>
+</div>
+<!-- Stat 2 -->
+<div class="flex min-w-[158px] flex-1 flex-col gap-1 rounded p-4 border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary transition-all group">
+<p class="text-primary-dim text-xs font-bold tracking-widest uppercase group-hover:text-primary transition-colors">Win Ratio</p>
+<p class="text-primary tracking-tight text-3xl font-bold leading-tight font-mono">85%</p>
+</div>
+<!-- Stat 3 (Hidden on mobile) -->
+<div class="hidden sm:flex min-w-[158px] flex-1 flex-col gap-1 rounded p-4 border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary transition-all group">
+<p class="text-primary-dim text-xs font-bold tracking-widest uppercase group-hover:text-primary transition-colors">Best Streak</p>
+<p class="text-primary tracking-tight text-3xl font-bold leading-tight font-mono">12</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Charm Sudoku - Difficulty Select</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // Modern Charm Palette
+                        "charm-bg": "#1E1E2E",      // Deep Violet Background
+                        "charm-surface": "#313244", // Overlay/Cards
+                        "charm-text": "#CAD3F5",    // Lavender Text
+                        "charm-muted": "#9399B2",   // Secondary Text
+                        "charm-primary": "#F5A97F", // Peach (Active/Focus)
+                        "charm-accent": "#8AADF4",  // Blue (Timer/Focus Border)
+                        "charm-success": "#A6DA95", // Green
+                        "charm-error": "#ED8796",   // Red
+                        "charm-highlight": "#363A4F", // Surface 1
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                    },
+                    boxShadow: {
+                        "tui": "8px 8px 0px 0px rgba(24, 24, 37, 0.5)", // Block shadow simulation
+                        "tui-active": "8px 8px 0px 0px rgba(138, 173, 244, 0.2)", // Colored block shadow
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E1E2E; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313244; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45475a; 
+        }
+
+        /* TUI Cursor Animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+    </style>
+</head>
+<body class="bg-charm-bg text-charm-text font-display antialiased selection:bg-charm-primary selection:text-charm-bg min-h-screen flex flex-col overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<div class="w-full border-b border-charm-surface bg-charm-bg/95 backdrop-blur-sm sticky top-0 z-50">
+<div class="max-w-[1200px] mx-auto px-6 py-4">
+<header class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<!-- Logo / Back -->
+<button class="group flex items-center justify-center size-10 rounded-lg bg-charm-surface hover:bg-charm-highlight transition-colors duration-200">
+<span class="material-symbols-outlined text-charm-text group-hover:text-charm-primary transition-colors">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="text-xl font-bold tracking-tight text-charm-text font-mono uppercase">
+<span class="text-charm-primary">Modern</span> Charm Sudoku
+                        </h1>
+<span class="text-xs font-mono text-charm-muted uppercase tracking-widest">v1.0.4 • TUI Edition</span>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="hidden md:flex items-center gap-2 px-4 py-2 bg-charm-surface/50 rounded-lg border border-charm-surface/50">
+<span class="size-2 rounded-full bg-charm-success animate-pulse"></span>
+<span class="text-xs font-mono text-charm-muted uppercase">Online</span>
+</div>
+<button class="flex items-center justify-center size-10 rounded-lg bg-charm-surface hover:bg-charm-highlight hover:text-charm-primary transition-all duration-200" title="Settings">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-lg bg-charm-surface hover:bg-charm-highlight hover:text-charm-primary transition-all duration-200" title="Help">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+</div>
+</header>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col items-center justify-center w-full px-6 py-12">
+<div class="w-full max-w-[1200px] flex flex-col gap-10">
+<!-- Section Header -->
+<div class="flex flex-col gap-2 items-center text-center">
+<div class="flex items-center gap-2 text-charm-primary mb-2">
+<span class="material-symbols-outlined text-3xl">grid_on</span>
+</div>
+<h2 class="text-3xl md:text-5xl font-bold tracking-tight text-charm-text font-mono uppercase">Select Difficulty</h2>
+<p class="text-charm-muted text-lg max-w-lg font-mono">Choose a challenge level to begin your session. Use arrow keys to navigate.</p>
+</div>
+<!-- Cards Container -->
+<!-- Using grid for responsive layout, but styling to look like a horizontal carousel on large screens -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
+<!-- Card 1: Easy -->
+<button class="group relative flex flex-col p-6 h-auto min-h-[280px] rounded-xl bg-charm-surface border-2 border-charm-surface hover:border-charm-accent hover:-translate-y-1 transition-all duration-300 shadow-tui hover:shadow-tui-active text-left focus:outline-none focus:border-charm-accent focus:shadow-tui-active focus:-translate-y-1">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-charm-accent">arrow_forward</span>
+</div>
+<div class="mb-6 flex items-center justify-center size-14 rounded-full bg-charm-bg border border-charm-highlight group-hover:border-charm-accent/30 transition-colors">
+<span class="text-3xl">☘️</span>
+</div>
+<div class="flex flex-col gap-2 mb-auto">
+<h3 class="text-2xl font-bold text-charm-text group-hover:text-charm-primary font-mono transition-colors">EASY</h3>
+<p class="text-charm-muted text-sm leading-relaxed">Perfect for a coffee break. Relaxing flow with obvious logic steps.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-charm-bg/50 flex items-center justify-between">
+<span class="text-xs font-mono uppercase text-charm-muted tracking-wider">Est. Time</span>
+<span class="text-sm font-bold font-mono text-charm-success">~5m</span>
+</div>
+</button>
+<!-- Card 2: Medium (Active State Simulation) -->
+<!-- We simulate focus here with border-charm-accent and charm-bg styling changes -->
+<button class="group relative flex flex-col p-6 h-auto min-h-[280px] rounded-xl bg-charm-surface border-2 border-charm-accent hover:border-charm-accent hover:-translate-y-1 transition-all duration-300 shadow-tui-active -translate-y-1 text-left focus:outline-none ring-2 ring-charm-accent/20 ring-offset-2 ring-offset-charm-bg">
+<div class="absolute top-0 right-0 p-1 bg-charm-accent rounded-bl-lg rounded-tr-lg">
+<span class="material-symbols-outlined text-charm-bg text-sm font-bold">check</span>
+</div>
+<div class="mb-6 flex items-center justify-center size-14 rounded-full bg-charm-bg border border-charm-accent transition-colors shadow-[0_0_15px_rgba(138,173,244,0.15)]">
+<span class="text-3xl">⚔️</span>
+</div>
+<div class="flex flex-col gap-2 mb-auto">
+<h3 class="text-2xl font-bold text-charm-primary font-mono transition-colors">MEDIUM</h3>
+<p class="text-charm-text text-sm leading-relaxed">Standard logic required. A balanced challenge for daily practice.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-charm-bg/50 flex items-center justify-between">
+<span class="text-xs font-mono uppercase text-charm-text tracking-wider">Est. Time</span>
+<span class="text-sm font-bold font-mono text-charm-accent">~12m</span>
+</div>
+</button>
+<!-- Card 3: Hard -->
+<button class="group relative flex flex-col p-6 h-auto min-h-[280px] rounded-xl bg-charm-surface border-2 border-charm-surface hover:border-charm-accent hover:-translate-y-1 transition-all duration-300 shadow-tui hover:shadow-tui-active text-left focus:outline-none focus:border-charm-accent focus:shadow-tui-active focus:-translate-y-1">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-charm-accent">arrow_forward</span>
+</div>
+<div class="mb-6 flex items-center justify-center size-14 rounded-full bg-charm-bg border border-charm-highlight group-hover:border-charm-accent/30 transition-colors">
+<span class="text-3xl">💀</span>
+</div>
+<div class="flex flex-col gap-2 mb-auto">
+<h3 class="text-2xl font-bold text-charm-text group-hover:text-charm-primary font-mono transition-colors">HARD</h3>
+<p class="text-charm-muted text-sm leading-relaxed">Complex techniques needed. For veterans who enjoy a puzzle.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-charm-bg/50 flex items-center justify-between">
+<span class="text-xs font-mono uppercase text-charm-muted tracking-wider">Est. Time</span>
+<span class="text-sm font-bold font-mono text-charm-primary">~25m</span>
+</div>
+</button>
+<!-- Card 4: Expert -->
+<button class="group relative flex flex-col p-6 h-auto min-h-[280px] rounded-xl bg-charm-surface border-2 border-charm-surface hover:border-charm-accent hover:-translate-y-1 transition-all duration-300 shadow-tui hover:shadow-tui-active text-left focus:outline-none focus:border-charm-accent focus:shadow-tui-active focus:-translate-y-1">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-charm-accent">arrow_forward</span>
+</div>
+<div class="mb-6 flex items-center justify-center size-14 rounded-full bg-charm-bg border border-charm-highlight group-hover:border-charm-accent/30 transition-colors">
+<span class="text-3xl">👹</span>
+</div>
+<div class="flex flex-col gap-2 mb-auto">
+<h3 class="text-2xl font-bold text-charm-text group-hover:text-charm-primary font-mono transition-colors">EXPERT</h3>
+<p class="text-charm-muted text-sm leading-relaxed">Unforgiving logic chains required. Good luck, you'll need it.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-charm-bg/50 flex items-center justify-between">
+<span class="text-xs font-mono uppercase text-charm-muted tracking-wider">Est. Time</span>
+<span class="text-sm font-bold font-mono text-charm-error">~45m+</span>
+</div>
+</button>
+</div>
+<!-- Keyboard Hints Footer -->
+<div class="flex items-center justify-center gap-8 mt-8 text-charm-muted font-mono text-sm opacity-60">
+<div class="flex items-center gap-2">
+<div class="flex gap-1">
+<span class="flex items-center justify-center size-6 rounded border border-charm-muted/40 bg-charm-surface text-xs">h</span>
+<span class="flex items-center justify-center size-6 rounded border border-charm-muted/40 bg-charm-surface text-xs">l</span>
+</div>
+<span>Navigate</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center h-6 px-2 rounded border border-charm-muted/40 bg-charm-surface text-xs">Enter</span>
+<span>Select</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center h-6 px-2 rounded border border-charm-muted/40 bg-charm-surface text-xs">Esc</span>
+<span>Back</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Pattern/Effect -->
+<div class="fixed inset-0 pointer-events-none z-[-1]" style="background-image: radial-gradient(circle at 50% 120%, rgba(138, 173, 244, 0.05), transparent 70%);"></div>
+<div class="fixed inset-0 pointer-events-none z-[-1]" style="background-image: radial-gradient(circle at 80% 20%, rgba(245, 169, 127, 0.03), transparent 50%);"></div>
+</body></html>

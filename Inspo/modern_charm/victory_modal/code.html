@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Charm Sudoku - Victory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5f13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                        // Custom TUI specific colors from PRD
+                        "tui-bg": "#1E1E2E",
+                        "tui-surface": "#313244",
+                        "tui-text": "#CAD3F5",
+                        "tui-muted": "#9399B2",
+                        "tui-accent": "#8AADF4",
+                        "tui-success": "#A6DA95",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    boxShadow: {
+                        'tui': '8px 8px 0px 0px rgba(0, 0, 0, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom animation for falling confetti */
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        .confetti {
+            position: absolute;
+            top: -10px;
+            color: #A6DA95;
+            font-family: 'JetBrains Mono', monospace;
+            user-select: none;
+            z-index: 0;
+            animation: fall linear forwards;
+        }
+        
+        /* Grid pattern background for the game area behind modal */
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, #313244 1px, transparent 1px),
+                linear-gradient(to bottom, #313244 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen overflow-hidden flex flex-col">
+<!-- Main Game Container (Blurred Background Context) -->
+<div class="relative flex-1 w-full h-full flex flex-col items-center justify-center overflow-hidden">
+<!-- Simulated Game Board Background -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none bg-grid-pattern"></div>
+<!-- Simulated Game UI Elements (Blurred) -->
+<div class="absolute inset-0 flex flex-col items-center justify-center blur-sm z-0">
+<div class="flex gap-8 mb-8">
+<div class="w-[400px] h-[400px] border-4 border-tui-surface grid grid-cols-3 gap-1 p-1 bg-tui-bg rounded-lg">
+<!-- Just some grid lines to simulate board -->
+<div class="bg-tui-surface/20"></div><div class="bg-tui-surface/20"></div><div class="bg-tui-surface/20"></div>
+<div class="bg-tui-surface/20"></div><div class="bg-tui-surface/20"></div><div class="bg-tui-surface/20"></div>
+<div class="bg-tui-surface/20"></div><div class="bg-tui-surface/20"></div><div class="bg-tui-surface/20"></div>
+</div>
+<div class="w-64 flex flex-col gap-4">
+<div class="h-32 bg-tui-surface/30 rounded-lg"></div>
+<div class="h-64 bg-tui-surface/30 rounded-lg"></div>
+</div>
+</div>
+</div>
+<!-- Overlay Backdrop -->
+<div class="absolute inset-0 bg-[#110b08]/80 z-10 backdrop-blur-sm"></div>
+<!-- ASCII Confetti Generator Script (Visual only, no logic) -->
+<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const colors = ['#F5A97F', '#8AADF4', '#A6DA95', '#CAD3F5', '#ED8796'];
+                const chars = ['*', '+', 'o', '.', 'x', '~'];
+                const container = document.querySelector('.confetti-container');
+                
+                setInterval(() => {
+                    const el = document.createElement('div');
+                    el.classList.add('confetti');
+                    el.innerText = chars[Math.floor(Math.random() * chars.length)];
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    el.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    container.appendChild(el);
+                    
+                    setTimeout(() => el.remove(), 5000);
+                }, 100);
+            });
+        </script>
+<div class="confetti-container absolute inset-0 z-20 overflow-hidden pointer-events-none"></div>
+<!-- Victory Modal -->
+<div class="relative z-30 flex flex-col w-full max-w-[600px] bg-tui-bg border-2 border-tui-surface rounded-xl shadow-tui animate-fade-in-up">
+<!-- Modal Header -->
+<div class="flex flex-col items-center justify-center pt-10 pb-6 px-8 text-center">
+<!-- Decorative Trophy Icon -->
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 border border-primary/20">
+<span class="material-symbols-outlined text-primary text-4xl">emoji_events</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-2 bg-gradient-to-r from-[#F5A97F] via-[#CAD3F5] to-[#8AADF4] bg-clip-text text-transparent uppercase font-mono">
+                    Puzzle Solved!
+                </h1>
+<p class="text-tui-muted text-lg font-medium">Excellent work! You've mastered this grid.</p>
+</div>
+<!-- Stats Grid -->
+<div class="px-8 py-2">
+<div class="grid grid-cols-2 gap-4">
+<!-- Stat Card 1 -->
+<div class="flex flex-col gap-1 p-4 rounded-lg bg-tui-surface/30 border border-tui-surface/50 hover:border-tui-accent/30 transition-colors">
+<div class="flex items-center gap-2 text-tui-muted mb-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold uppercase tracking-wider">Time</span>
+</div>
+<p class="text-white font-mono text-2xl font-bold tracking-tight">12:45</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="flex flex-col gap-1 p-4 rounded-lg bg-tui-surface/30 border border-tui-surface/50 hover:border-tui-accent/30 transition-colors">
+<div class="flex items-center gap-2 text-tui-muted mb-1">
+<span class="material-symbols-outlined text-sm">signal_cellular_alt</span>
+<span class="text-xs font-bold uppercase tracking-wider">Difficulty</span>
+</div>
+<p class="text-tui-accent font-mono text-2xl font-bold tracking-tight">Hard</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="flex flex-col gap-1 p-4 rounded-lg bg-tui-surface/30 border border-tui-surface/50 hover:border-tui-accent/30 transition-colors">
+<div class="flex items-center gap-2 text-tui-muted mb-1">
+<span class="material-symbols-outlined text-sm">close</span>
+<span class="text-xs font-bold uppercase tracking-wider">Mistakes</span>
+</div>
+<div class="flex items-baseline gap-1">
+<p class="text-tui-success font-mono text-2xl font-bold tracking-tight">0</p>
+<span class="text-tui-muted font-mono text-sm">/ 3</span>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="flex flex-col gap-1 p-4 rounded-lg bg-tui-surface/30 border border-tui-surface/50 hover:border-tui-accent/30 transition-colors">
+<div class="flex items-center gap-2 text-tui-muted mb-1">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<span class="text-xs font-bold uppercase tracking-wider">Score</span>
+</div>
+<p class="text-primary font-mono text-2xl font-bold tracking-tight">9,850</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3 px-8 pt-8 pb-10">
+<button class="group relative flex items-center justify-center w-full h-14 bg-primary hover:bg-orange-600 text-white rounded-lg font-bold text-lg tracking-wide transition-all shadow-lg hover:shadow-orange-500/25 ring-offset-2 ring-offset-tui-bg focus:ring-2 focus:ring-primary outline-none">
+<span class="absolute left-6 text-white/50 font-mono opacity-0 group-hover:opacity-100 transition-opacity text-xl">&gt;</span>
+<span class="material-symbols-outlined mr-2">restart_alt</span>
+                    New Game
+                    <div class="absolute right-4 text-xs font-mono font-normal opacity-60 bg-black/20 px-2 py-1 rounded">ENTER</div>
+</button>
+<button class="group flex items-center justify-center w-full h-14 bg-transparent border border-tui-surface hover:border-tui-text text-tui-muted hover:text-white rounded-lg font-medium text-base transition-all ring-offset-2 ring-offset-tui-bg focus:ring-2 focus:ring-tui-text outline-none">
+<span class="material-symbols-outlined mr-2 text-xl">grid_view</span>
+                    Return to Menu
+                    <div class="absolute right-12 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-mono text-tui-muted">ESC</div>
+</button>
+</div>
+<!-- Footer Hint -->
+<div class="absolute bottom-3 w-full text-center">
+<p class="text-[10px] text-tui-surface uppercase tracking-widest font-mono">Modern Charm Sudoku v1.0</p>
+</div>
+</div>
+</div>
+</body></html>

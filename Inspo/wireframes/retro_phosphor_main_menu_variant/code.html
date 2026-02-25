@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Phosphor Sudoku</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=VT323&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffb000", /* Amber phosphor */
+                        "primary-dim": "#b37b00",
+                        "background-light": "#1a1814", /* Unused in this dark theme but required by config */
+                        "background-dark": "#0c0b09", /* Deep black */
+                        "terminal-black": "#050505",
+                        "phosphor-glow": "rgba(255, 176, 0, 0.15)",
+                    },
+                    fontFamily: {
+                        "display": ["VT323", "monospace"], /* Retro terminal font */
+                        "sans": ["Space Grotesk", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "2px", "xl": "4px", "full": "9999px" },
+                    backgroundImage: {
+                        'scanlines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 10px rgba(255, 176, 0, 0.5), 0 0 20px rgba(255, 176, 0, 0.3)',
+                        'glow-sm': '0 0 5px rgba(255, 176, 0, 0.4)',
+                        'crt': 'inset 0 0 100px rgba(0,0,0,0.9)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom CRT effects */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        .text-glow {
+            text-shadow: 0 0 4px rgba(255, 176, 0, 0.6);
+        }
+        .border-glow {
+            box-shadow: 0 0 8px rgba(255, 176, 0, 0.3);
+        }
+        /* Flickering animation */
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.99; }
+            50% { opacity: 0.95; }
+            55% { opacity: 0.9; }
+            60% { opacity: 0.95; }
+            100% { opacity: 0.98; }
+        }
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display selection:bg-primary selection:text-background-dark overflow-hidden">
+<!-- Scanline Overlay -->
+<div class="fixed inset-0 z-50 pointer-events-none scanlines w-full h-full opacity-30"></div>
+<div class="fixed inset-0 z-40 pointer-events-none shadow-crt w-full h-full"></div>
+<div class="relative flex h-full grow flex-col crt-flicker z-10">
+<div class="layout-container flex h-full grow flex-col items-center">
+<!-- Header -->
+<header class="w-full max-w-[1200px] flex items-center justify-between border-b-2 border-primary/30 bg-terminal-black/80 px-6 py-4 mt-4 relative after:absolute after:bottom-[-2px] after:left-0 after:w-full after:h-[2px] after:bg-primary/20 after:blur-[2px]">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl animate-pulse text-glow">grid_on</span>
+<h2 class="text-3xl font-bold tracking-widest text-glow uppercase">Sudoku.SYS</h2>
+</div>
+<nav class="hidden md:flex flex-1 justify-end gap-12 items-center">
+<div class="flex items-center gap-8">
+<a class="text-primary/70 hover:text-primary hover:text-glow text-xl tracking-wider transition-all decoration-0 hover:underline decoration-2 underline-offset-4" href="#">HIGH_SCORES</a>
+<a class="text-primary/70 hover:text-primary hover:text-glow text-xl tracking-wider transition-all decoration-0 hover:underline decoration-2 underline-offset-4" href="#">SETTINGS</a>
+<a class="text-primary/70 hover:text-primary hover:text-glow text-xl tracking-wider transition-all decoration-0 hover:underline decoration-2 underline-offset-4" href="#">HELP</a>
+</div>
+<button class="group flex items-center justify-center border-2 border-primary bg-transparent hover:bg-primary text-primary hover:text-background-dark transition-colors duration-100 px-6 py-1 shadow-glow-sm">
+<span class="text-xl font-bold tracking-widest group-hover:animate-pulse">LOGIN_</span>
+</button>
+</nav>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-col items-center justify-center w-full max-w-[960px] flex-1 py-12 px-4">
+<!-- Title Block -->
+<div class="text-center mb-12 relative">
+<div class="absolute inset-0 bg-primary/5 blur-3xl rounded-full"></div>
+<h1 class="relative text-primary text-[5rem] md:text-[7rem] leading-none tracking-tight font-bold text-glow mb-4" style="text-shadow: 4px 4px 0px rgba(179, 123, 0, 0.3);">
+                        SUDOKU
+                    </h1>
+<div class="flex items-center justify-center gap-2 text-primary/80 animate-pulse">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<p class="text-xl tracking-[0.2em] font-medium border-r-[10px] border-primary pr-2">SYSTEM_READY...</p>
+</div>
+</div>
+<!-- Difficulty Selection -->
+<div class="w-full max-w-md flex flex-col gap-6 relative z-10">
+<div class="text-center mb-2">
+<p class="text-primary text-xl font-bold tracking-widest border-b border-primary/30 inline-block pb-1 px-8">SELECT_DIFFICULTY_LEVEL</p>
+</div>
+<button class="group relative flex w-full cursor-pointer items-center justify-between border-2 border-primary bg-background-dark hover:bg-primary/10 px-6 py-4 transition-all duration-200 hover:shadow-glow hover:-translate-y-1">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary opacity-0 transition-opacity group-hover:opacity-100"></div>
+<span class="text-primary text-2xl font-bold tracking-widest group-hover:text-glow">[ EASY ]</span>
+<div class="flex gap-1">
+<div class="h-3 w-3 bg-primary"></div>
+<div class="h-3 w-3 border border-primary/50"></div>
+<div class="h-3 w-3 border border-primary/50"></div>
+</div>
+</button>
+<button class="group relative flex w-full cursor-pointer items-center justify-between border-2 border-primary bg-background-dark hover:bg-primary/10 px-6 py-4 transition-all duration-200 hover:shadow-glow hover:-translate-y-1">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary opacity-0 transition-opacity group-hover:opacity-100"></div>
+<span class="text-primary text-2xl font-bold tracking-widest group-hover:text-glow">[ MEDIUM ]</span>
+<div class="flex gap-1">
+<div class="h-3 w-3 bg-primary"></div>
+<div class="h-3 w-3 bg-primary"></div>
+<div class="h-3 w-3 border border-primary/50"></div>
+</div>
+</button>
+<button class="group relative flex w-full cursor-pointer items-center justify-between border-2 border-primary bg-background-dark hover:bg-primary/10 px-6 py-4 transition-all duration-200 hover:shadow-glow hover:-translate-y-1">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary opacity-0 transition-opacity group-hover:opacity-100"></div>
+<span class="text-primary text-2xl font-bold tracking-widest group-hover:text-glow">[ HARD ]</span>
+<div class="flex gap-1">
+<div class="h-3 w-3 bg-primary"></div>
+<div class="h-3 w-3 bg-primary"></div>
+<div class="h-3 w-3 bg-primary"></div>
+</div>
+</button>
+<button class="group relative flex w-full cursor-pointer items-center justify-between border-2 border-primary/50 border-dashed bg-background-dark hover:bg-primary/5 px-6 py-4 transition-all duration-200 mt-4 opacity-80 hover:opacity-100">
+<span class="text-primary text-xl font-bold tracking-widest group-hover:text-glow text-left flex items-center gap-3">
+<span class="material-symbols-outlined">save</span>
+                            LOAD_SAVED_GAME
+                        </span>
+<span class="text-primary/60 text-lg">SLOT_1</span>
+</button>
+</div>
+<!-- Footer Decorative Elements -->
+<div class="mt-auto w-full pt-16 pb-8 flex justify-between items-end text-primary/40 text-sm font-mono tracking-tighter uppercase">
+<div class="flex flex-col gap-1">
+<span>MEM: 640K OK</span>
+<span>VRAM: 256K</span>
+<span>SND: SB16</span>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span>VER 1.0.4</span>
+<span>(C) 198X CORP</span>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

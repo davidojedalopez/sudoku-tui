@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Phosphor Sudoku - Difficulty Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FFB000", // Amber-500
+                        "primary-dim": "#966300", // Amber-800
+                        "primary-bright": "#FFD15C", // Amber-300
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#0A0600", // Near Black
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"] // Using Space Grotesk as requested, but treating it like a terminal font
+                    },
+                    boxShadow: {
+                        'crt-glow': '0 0 10px rgba(255, 176, 0, 0.5), 0 0 20px rgba(255, 176, 0, 0.3)',
+                        'text-glow': '0 0 4px rgba(255, 176, 0, 0.8)',
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Retro Terminal CRT Effects */
+        body {
+            background-color: #0A0600;
+            color: #FFB000;
+            overflow: hidden;
+        }
+
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.99; }
+            50% { opacity: 0.95; }
+            80% { opacity: 0.9; }
+            100% { opacity: 0.98; }
+        }
+
+        /* Custom Scrollbar for Terminal look */
+        ::-webkit-scrollbar {
+            width: 12px;
+            background: #0A0600;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #966300;
+            border: 2px solid #0A0600;
+        }
+        
+        .double-border {
+            position: relative;
+            border: 4px double #FFB000;
+            box-shadow: 0 0 15px rgba(255, 176, 0, 0.2);
+        }
+
+        .double-border::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 1px solid rgba(255, 176, 0, 0.3);
+            pointer-events: none;
+        }
+
+        /* Force monospace metrics on Space Grotesk for alignment */
+        .mono-tweak {
+            font-feature-settings: "tnum" on, "zero" on;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-primary font-display antialiased h-screen w-full flex flex-col relative selection:bg-primary selection:text-background-dark">
+<!-- CRT Overlay Effects -->
+<div class="scanlines"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(0,0,0,0.4)_100%)] pointer-events-none z-40"></div>
+<!-- Main Content Wrapper -->
+<div class="relative z-10 flex flex-col h-full w-full max-w-5xl mx-auto p-4 md:p-8 justify-center items-center">
+<!-- Background Blur/Dim (Simulating the menu behind the modal) -->
+<div aria-hidden="true" class="absolute inset-0 flex flex-col justify-between opacity-20 pointer-events-none select-none blur-[2px]">
+<!-- Simulated Main Menu Background -->
+<div class="flex flex-col items-center mt-20 gap-8">
+<pre class="text-[0.6rem] md:text-xs leading-[1.1] text-primary font-bold text-center">  ██████  ██    ██ ██████   ██████  ██   ██ ██    ██ 
+ ██       ██    ██ ██   ██ ██    ██ ██  ██  ██    ██ 
+ ██   ███ ██    ██ ██   ██ ██    ██ █████   ██    ██ 
+ ██    ██ ██    ██ ██   ██ ██    ██ ██  ██  ██    ██ 
+  ██████   ██████  ██████   ██████  ██   ██  ██████  
+                </pre>
+<div class="flex flex-col gap-4 text-xl w-64">
+<div class="flex items-center gap-4 text-primary-dim">
+<span>  </span>
+<span>[N]ew Cycle</span>
+</div>
+<div class="flex items-center gap-4 text-primary-dim">
+<span>  </span>
+<span>[A]rchives</span>
+</div>
+<div class="flex items-center gap-4 text-primary-dim">
+<span>  </span>
+<span>[C]onfig</span>
+</div>
+<div class="flex items-center gap-4 text-primary-dim">
+<span>  </span>
+<span>[Q]uit</span>
+</div>
+</div>
+</div>
+<div class="w-full border-t border-primary-dim p-2 flex justify-between text-sm text-primary-dim">
+<span>v1.0.0-rc1</span>
+<span>(c) 2024 RETRO_CORP</span>
+</div>
+</div>
+<!-- The Modal (Difficulty Selection) -->
+<div class="relative w-full max-w-lg bg-background-dark double-border p-8 shadow-crt-glow">
+<!-- Modal Title embedded in border visual trick -->
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-background-dark px-4">
+<h2 class="text-primary-bright font-bold tracking-widest text-lg shadow-text-glow whitespace-nowrap mono-tweak">
+                    [ INITIALIZE MATRIX ]
+                </h2>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-6 mt-2">
+<!-- Prompt Text -->
+<div class="text-center mb-4">
+<p class="text-primary text-sm tracking-widest uppercase opacity-80 mono-tweak">
+                        // Select grid entropy level
+                    </p>
+</div>
+<!-- Selection List -->
+<div aria-label="Select Difficulty" class="flex flex-col gap-3 w-full" role="radiogroup">
+<!-- Option 1: Easy -->
+<label class="group relative flex items-center justify-between cursor-pointer p-2 hover:bg-primary/10 transition-colors duration-75">
+<input class="peer sr-only" name="difficulty" type="radio" value="easy"/>
+<!-- Visual Indicator -->
+<div class="flex items-center gap-3">
+<span class="text-primary-dim peer-checked:text-primary-bright font-bold text-lg w-6 text-center group-hover:text-primary">
+<span class="group-hover:hidden peer-checked:hidden"> </span>
+<span class="hidden group-hover:inline peer-checked:hidden">&gt;</span>
+<span class="hidden peer-checked:inline animate-pulse-fast">█</span>
+</span>
+<span class="text-primary/70 peer-checked:text-primary-bright peer-checked:font-bold peer-checked:shadow-text-glow text-lg uppercase tracking-wider mono-tweak">
+                                Easy
+                            </span>
+</div>
+<!-- Meta Data -->
+<div class="text-primary-dim text-sm font-mono border-l border-primary-dim/30 pl-4 w-32 text-right">
+                            36 GIVENS
+                        </div>
+</label>
+<!-- Option 2: Medium -->
+<label class="group relative flex items-center justify-between cursor-pointer p-2 hover:bg-primary/10 transition-colors duration-75">
+<input class="peer sr-only" name="difficulty" type="radio" value="medium"/>
+<div class="flex items-center gap-3">
+<span class="text-primary-dim peer-checked:text-primary-bright font-bold text-lg w-6 text-center group-hover:text-primary">
+<span class="group-hover:hidden peer-checked:hidden"> </span>
+<span class="hidden group-hover:inline peer-checked:hidden">&gt;</span>
+<span class="hidden peer-checked:inline animate-pulse-fast">█</span>
+</span>
+<span class="text-primary/70 peer-checked:text-primary-bright peer-checked:font-bold peer-checked:shadow-text-glow text-lg uppercase tracking-wider mono-tweak">
+                                Medium
+                            </span>
+</div>
+<div class="text-primary-dim text-sm font-mono border-l border-primary-dim/30 pl-4 w-32 text-right">
+                            27 GIVENS
+                        </div>
+</label>
+<!-- Option 3: Hard (Selected by default for visual demo) -->
+<label class="group relative flex items-center justify-between cursor-pointer p-2 bg-primary/20">
+<input checked="" class="peer sr-only" name="difficulty" type="radio" value="hard"/>
+<div class="flex items-center gap-3">
+<!-- Selected Indicator Logic -->
+<span class="text-primary-dim peer-checked:text-primary-bright font-bold text-lg w-6 text-center">
+<span class="hidden peer-checked:inline animate-pulse-fast">█</span>
+</span>
+<!-- Text with brackets for selected state -->
+<div class="flex items-center text-lg uppercase tracking-wider mono-tweak text-primary-bright font-bold shadow-text-glow">
+<span class="mr-2">[</span>
+                                Hard
+                                <span class="ml-2">]</span>
+</div>
+</div>
+<div class="text-primary text-sm font-mono border-l border-primary/50 pl-4 w-32 text-right font-bold">
+                            21 GIVENS
+                        </div>
+<!-- Decorative 'active' scanline on the row -->
+<div class="absolute inset-0 border border-primary opacity-30 pointer-events-none"></div>
+</label>
+<!-- Option 4: Expert -->
+<label class="group relative flex items-center justify-between cursor-pointer p-2 hover:bg-primary/10 transition-colors duration-75">
+<input class="peer sr-only" name="difficulty" type="radio" value="expert"/>
+<div class="flex items-center gap-3">
+<span class="text-primary-dim peer-checked:text-primary-bright font-bold text-lg w-6 text-center group-hover:text-primary">
+<span class="group-hover:hidden peer-checked:hidden"> </span>
+<span class="hidden group-hover:inline peer-checked:hidden">&gt;</span>
+<span class="hidden peer-checked:inline animate-pulse-fast">█</span>
+</span>
+<span class="text-primary/70 peer-checked:text-primary-bright peer-checked:font-bold peer-checked:shadow-text-glow text-lg uppercase tracking-wider mono-tweak">
+                                Expert
+                            </span>
+</div>
+<div class="text-primary-dim text-sm font-mono border-l border-primary-dim/30 pl-4 w-32 text-right">
+                            17 GIVENS
+                        </div>
+</label>
+</div>
+<!-- Footer / Controls Hint -->
+<div class="mt-6 border-t-2 border-primary-dim/30 pt-4 flex justify-between items-center text-xs tracking-widest text-primary-dim uppercase">
+<div class="flex gap-4">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                            NAVIGATE
+                        </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">keyboard_return</span>
+                            CONFIRM
+                        </span>
+</div>
+<div>
+                        ID: <span class="text-primary">#A7B2</span>
+</div>
+</div>
+</div>
+<!-- Decorative Corners (ASCII Style) -->
+<div class="absolute top-[-4px] left-[-4px] text-primary bg-background-dark leading-none">╔</div>
+<div class="absolute top-[-4px] right-[-4px] text-primary bg-background-dark leading-none">╗</div>
+<div class="absolute bottom-[-4px] left-[-4px] text-primary bg-background-dark leading-none">╚</div>
+<div class="absolute bottom-[-4px] right-[-4px] text-primary bg-background-dark leading-none">╝</div>
+</div>
+</div>
+</body></html>
