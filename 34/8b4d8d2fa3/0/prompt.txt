@@ -1,0 +1,5 @@
+Fix @Tasks/003 Input mode @"Tasks/003 Input mode wrapping.md"
+
+---
+
+Good. Add everything to git, including the new task at @"../Tasks/003 Input mode wrapping.md", commit and push to main

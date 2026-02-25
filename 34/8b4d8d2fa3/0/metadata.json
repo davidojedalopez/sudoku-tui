@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.4.7",
+  "checkpoint_id": "348b4d8d2fa3",
+  "session_id": "6faa48e8-1e0c-4ed2-8795-7aeb8cc60d61",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-25T22:32:26.860982Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "Tasks/004 Resume game.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "67461dbe6b71",
+  "checkpoint_transcript_start": 75,
+  "transcript_lines_at_start": 75,
+  "token_usage": {
+    "input_tokens": 2,
+    "cache_creation_tokens": 597,
+    "cache_read_tokens": 134957,
+    "output_tokens": 93,
+    "api_call_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-25T22:32:26.833088Z",
+    "agent_lines": 5,
+    "human_added": 255,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 260,
+    "agent_percentage": 1.9230769230769231
+  }
+}
