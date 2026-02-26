@@ -1,6 +1,7 @@
 package library
 
 import (
+	"sort"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -12,13 +13,15 @@ import (
 	"github.com/davidojeda/sudoku-tui/internal/theme"
 )
 
+var filterCycle = []string{"", "easy", "medium", "hard", "expert"}
+
 // Model is the puzzle library screen.
 type Model struct {
 	puzzles      []curated.Puzzle
 	cursor       int
 	scrollOffset int // index of the first visible list item
 	listHeight   int // visible list rows (set each render, used by Update)
-	filter       string
+	diffFilter   string // "" = all, or "easy"/"medium"/"hard"/"expert"
 	width        int
 	height       int
 	theme        *theme.Theme
@@ -47,6 +50,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "esc":
 			return m, func() tea.Msg { return msgs.NavigateMsg{To: msgs.ScreenMenu} }
+		case "tab":
+			m.cycleFilter()
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
@@ -55,7 +60,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		case "down", "j":
-			filtered := m.filtered()
+			filtered := m.filteredAndSorted()
 			if m.cursor < len(filtered)-1 {
 				m.cursor++
 				if h := m.visibleHeight(); m.cursor >= m.scrollOffset+h {
@@ -63,7 +68,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		case "pgdown":
-			filtered := m.filtered()
+			filtered := m.filteredAndSorted()
 			h := m.visibleHeight()
 			m.cursor = min(m.cursor+h, len(filtered)-1)
 			if m.cursor >= m.scrollOffset+h {
@@ -76,7 +81,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.scrollOffset = m.cursor
 			}
 		case "enter":
-			filtered := m.filtered()
+			filtered := m.filteredAndSorted()
 			if m.cursor < len(filtered) {
 				puzzle := filtered[m.cursor]
 				return m, m.loadPuzzle(puzzle)
@@ -86,17 +91,70 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *Model) filtered() []curated.Puzzle {
-	if m.filter == "" {
-		return m.puzzles
+func (m *Model) cycleFilter() {
+	for i, f := range filterCycle {
+		if f == m.diffFilter {
+			m.diffFilter = filterCycle[(i+1)%len(filterCycle)]
+			m.cursor = 0
+			m.scrollOffset = 0
+			return
+		}
 	}
-	f := strings.ToLower(m.filter)
+	m.diffFilter = ""
+	m.cursor = 0
+	m.scrollOffset = 0
+}
+
+// normalizeDiff maps raw difficulty strings (including "very hard") to canonical filter keys.
+func normalizeDiff(d string) string {
+	switch strings.ToLower(d) {
+	case "easy":
+		return "easy"
+	case "medium":
+		return "medium"
+	case "hard":
+		return "hard"
+	case "expert", "very hard":
+		return "expert"
+	}
+	return strings.ToLower(d)
+}
+
+func diffWeight(d string) int {
+	switch normalizeDiff(d) {
+	case "easy":
+		return 0
+	case "medium":
+		return 1
+	case "hard":
+		return 2
+	case "expert":
+		return 3
+	}
+	return 4
+}
+
+func (m *Model) filteredAndSorted() []curated.Puzzle {
 	var result []curated.Puzzle
 	for _, p := range m.puzzles {
-		if strings.Contains(strings.ToLower(p.Name), f) ||
-			strings.Contains(strings.ToLower(p.Difficulty), f) {
+		if m.diffFilter == "" || normalizeDiff(p.Difficulty) == m.diffFilter {
 			result = append(result, p)
 		}
+	}
+	if m.diffFilter == "" {
+		// No filter: sort by difficulty first, then alphabetically within each level.
+		sort.Slice(result, func(i, j int) bool {
+			wi, wj := diffWeight(result[i].Difficulty), diffWeight(result[j].Difficulty)
+			if wi != wj {
+				return wi < wj
+			}
+			return strings.ToLower(result[i].Name) < strings.ToLower(result[j].Name)
+		})
+	} else {
+		// Filter active: sort alphabetically.
+		sort.Slice(result, func(i, j int) bool {
+			return strings.ToLower(result[i].Name) < strings.ToLower(result[j].Name)
+		})
 	}
 	return result
 }
@@ -161,17 +219,21 @@ func gridToString(grid [9][9]int) string {
 
 func (m *Model) View() string {
 	th := m.theme
-	filtered := m.filtered()
+	filtered := m.filteredAndSorted()
 
 	header := th.Header.Bar.Width(m.width).Render(" " + th.Header.Title.Render("PUZZLE LIBRARY"))
 
+	filterBar := m.renderFilterBar()
+
 	hints := th.Footer.KeyHint.Render("j/k") + th.Footer.KeyLabel.Render(" Scroll") +
 		"   " + th.Footer.KeyHint.Render("PgDn/PgUp") + th.Footer.KeyLabel.Render(" Page") +
+		"   " + th.Footer.KeyHint.Render("Tab") + th.Footer.KeyLabel.Render(" Filter") +
 		"   " + th.Footer.KeyHint.Render("Enter") + th.Footer.KeyLabel.Render(" Load") +
 		"   " + th.Footer.KeyHint.Render("Esc") + th.Footer.KeyLabel.Render(" Back")
 	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
 
-	bodyHeight := m.height - lipgloss.Height(header) - lipgloss.Height(footer)
+	filterBarHeight := lipgloss.Height(filterBar)
+	bodyHeight := m.height - lipgloss.Height(header) - filterBarHeight - lipgloss.Height(footer)
 	if bodyHeight < 1 {
 		bodyHeight = 1
 	}
@@ -210,7 +272,34 @@ func (m *Model) View() string {
 
 	body := lipgloss.NewStyle().Height(bodyHeight).Render(panels)
 
-	return lipgloss.JoinVertical(lipgloss.Left, header, body, footer)
+	return lipgloss.JoinVertical(lipgloss.Left, header, filterBar, body, footer)
+}
+
+func (m *Model) renderFilterBar() string {
+	th := m.theme
+	type chip struct {
+		key   string
+		label string
+	}
+	chips := []chip{
+		{"", "ALL"},
+		{"easy", "EASY"},
+		{"medium", "MEDIUM"},
+		{"hard", "HARD"},
+		{"expert", "EXPERT"},
+	}
+
+	var parts []string
+	parts = append(parts, th.Footer.KeyLabel.Render("  Filter "))
+	for _, c := range chips {
+		if c.key == m.diffFilter {
+			parts = append(parts, th.Library.FilterChipActive.Render(c.label))
+		} else {
+			parts = append(parts, th.Library.FilterChip.Render(c.label))
+		}
+		parts = append(parts, " ")
+	}
+	return lipgloss.JoinHorizontal(lipgloss.Center, parts...)
 }
 
 func (m *Model) renderList(puzzles []curated.Puzzle, width int) string {
@@ -321,14 +410,14 @@ func (m *Model) renderPreview(givens string) string {
 
 func (m *Model) diffBadge(diff string) string {
 	th := m.theme
-	switch strings.ToLower(diff) {
+	switch normalizeDiff(diff) {
 	case "easy":
 		return th.Badges.Easy.Render("EASY")
 	case "medium":
 		return th.Badges.Medium.Render("MEDIUM")
 	case "hard":
 		return th.Badges.Hard.Render("HARD")
-	case "expert", "very hard":
+	case "expert":
 		return th.Badges.Expert.Render("EXPERT")
 	}
 	return diff

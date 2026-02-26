@@ -200,9 +200,11 @@ func buildTheme(name string, p Palette, strings ThemeStrings) *Theme {
 		DetailLabel:   lipgloss.NewStyle().Foreground(p.FgDim),
 		DetailValue:   lipgloss.NewStyle().Foreground(p.Fg),
 		DetailDesc:    lipgloss.NewStyle().Foreground(p.FgDim),
-		PreviewBorder: lipgloss.NewStyle().BorderStyle(lipgloss.RoundedBorder()).BorderForeground(p.Border),
-		PreviewCell:   lipgloss.NewStyle().Foreground(p.Fg),
-		LoadButton:    lipgloss.NewStyle().Background(p.Primary).Foreground(p.Bg).Bold(true).Padding(0, 2),
+		PreviewBorder:    lipgloss.NewStyle().BorderStyle(lipgloss.RoundedBorder()).BorderForeground(p.Border),
+		PreviewCell:      lipgloss.NewStyle().Foreground(p.Fg),
+		LoadButton:       lipgloss.NewStyle().Background(p.Primary).Foreground(p.Bg).Bold(true).Padding(0, 2),
+		FilterChip:       lipgloss.NewStyle().Foreground(p.FgDim).Padding(0, 1),
+		FilterChipActive: lipgloss.NewStyle().Background(p.Accent).Foreground(p.Bg).Bold(true).Padding(0, 1),
 	}
 
 	// History styles

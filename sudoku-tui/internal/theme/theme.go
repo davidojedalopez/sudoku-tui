@@ -106,16 +106,18 @@ type BadgeStyles struct {
 
 // LibraryStyles holds puzzle library styles.
 type LibraryStyles struct {
-	PanelBorder   lipgloss.Style
-	Item          lipgloss.Style
-	ItemActive    lipgloss.Style
-	DetailTitle   lipgloss.Style
-	DetailLabel   lipgloss.Style
-	DetailValue   lipgloss.Style
-	DetailDesc    lipgloss.Style
-	PreviewBorder lipgloss.Style
-	PreviewCell   lipgloss.Style
-	LoadButton    lipgloss.Style
+	PanelBorder     lipgloss.Style
+	Item            lipgloss.Style
+	ItemActive      lipgloss.Style
+	DetailTitle     lipgloss.Style
+	DetailLabel     lipgloss.Style
+	DetailValue     lipgloss.Style
+	DetailDesc      lipgloss.Style
+	PreviewBorder   lipgloss.Style
+	PreviewCell     lipgloss.Style
+	LoadButton      lipgloss.Style
+	FilterChip      lipgloss.Style
+	FilterChipActive lipgloss.Style
 }
 
 // HistoryStyles holds history screen styles.
