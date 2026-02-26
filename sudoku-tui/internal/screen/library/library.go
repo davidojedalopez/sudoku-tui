@@ -137,17 +137,18 @@ func (m *Model) View() string {
 
 	// Overhead: 2 (list border) + 2 ("  " separator) + 2 (detail border) = 6
 	// No body indent – panels extend to the screen edges.
+	// Allocate list first (min 29 so 17-char names fit), then give remainder to detail.
 	available := m.width - 6
 	if available < 1 {
 		available = 1
 	}
-	detailWidth := available * 40 / 100
+	listWidth := available * 40 / 100
+	if listWidth < 29 { // 29 = maxNameLen(17) + badge overhead(12)
+		listWidth = 29
+	}
+	detailWidth := available - listWidth
 	if detailWidth < 27 { // board preview is 25 chars wide; need at least 27
 		detailWidth = 27
-	}
-	listWidth := available - detailWidth
-	if listWidth < 15 {
-		listWidth = 15
 	}
 
 	list := m.renderList(filtered, listWidth)
@@ -210,23 +211,28 @@ func (m *Model) renderDetail(puzzles []curated.Puzzle, width int) string {
 	authorLine := th.Library.DetailLabel.Render("Author:     ") + th.Library.DetailValue.Render(p.Author)
 	desc := th.Library.DetailDesc.Render(p.Description)
 
+	var refLine string
+	if p.Reference != "" {
+		ref := p.Reference
+		maxRef := width - 6 // account for "URL: " (5 chars) + "…" (1 char)
+		if maxRef > 4 && len(ref) > maxRef {
+			ref = ref[:maxRef] + "…"
+		}
+		refLine = th.Library.DetailLabel.Render("URL: ") + th.Library.DetailDesc.Render(ref)
+	}
+
 	preview := m.renderPreview(p.Givens)
 
 	loadBtn := th.Library.LoadButton.Render("[ Enter ] LOAD PUZZLE")
 
+	parts := []string{title, "", diffLine, authorLine}
+	if refLine != "" {
+		parts = append(parts, refLine)
+	}
+	parts = append(parts, "", desc, "", preview, "", loadBtn)
+
 	_ = width
-	return lipgloss.JoinVertical(lipgloss.Left,
-		title,
-		"",
-		diffLine,
-		authorLine,
-		"",
-		desc,
-		"",
-		preview,
-		"",
-		loadBtn,
-	)
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 func (m *Model) renderPreview(givens string) string {

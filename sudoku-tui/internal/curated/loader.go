@@ -15,6 +15,7 @@ type Puzzle struct {
 	Name        string `json:"name"`
 	Difficulty  string `json:"difficulty"`
 	Author      string `json:"author"`
+	Reference   string `json:"reference"`
 	Description string `json:"description"`
 	Givens      string `json:"givens"`
 }
