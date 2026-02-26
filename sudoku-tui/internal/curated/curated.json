@@ -466,5 +466,662 @@
     "reference": "https://abakcus.com/article/the-worlds-hardest-sudoku-by-arto-inkala/",
     "description": "Created by Arto Inkala in 2010 for The Daily Mail. Rated 11 on a standard 5-star scale—requires 10-step lookaheads. The definitive extreme Sudoku challenge.",
     "givens": "800000000003600000070090200060005030004020070030100006000300005001060400500000000"
+  },
+  {
+    "id": "ctc_2302_the_loneliest_number",
+    "name": "The Loneliest Number",
+    "difficulty": "hard",
+    "author": "Snyder",
+    "reference": "https://crackingthecryptic.com/sudoku?id=2302",
+    "description": "Classic sudoku by Snyder, featured on Cracking the Cryptic. 25 given digits.",
+    "givens": "002306700000405000300000008210000097000010000450000013800000004000602000007908500"
+  },
+  {
+    "id": "ctc_2250_crest_of_the_gorons",
+    "name": "Crest of the Gorons",
+    "difficulty": "hard",
+    "author": "Wei-Hwa Huang",
+    "reference": "https://crackingthecryptic.com/sudoku?id=2250",
+    "description": "Classic sudoku by Wei-Hwa Huang, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "000020000500070003032000940040000060009431500001000200004000100000806000000050000"
+  },
+  {
+    "id": "ctc_2246_din_s_pearl",
+    "name": "Din's Pearl",
+    "difficulty": "hard",
+    "author": "Wei-Hwa Huang",
+    "reference": "https://crackingthecryptic.com/sudoku?id=2246",
+    "description": "Classic sudoku by Wei-Hwa Huang, featured on Cracking the Cryptic. 27 given digits.",
+    "givens": "023000900100450080000006700045000000600798001000000320008200000090013005007000460"
+  },
+  {
+    "id": "ctc_2247_crest_of_the_kokiri",
+    "name": "Crest of the Kokiri",
+    "difficulty": "hard",
+    "author": "Wei-Hwa Huang",
+    "reference": "https://crackingthecryptic.com/sudoku?id=2247",
+    "description": "Classic sudoku by Wei-Hwa Huang, featured on Cracking the Cryptic. 25 given digits.",
+    "givens": "002000000010067800400500020500030009100000082020006703009450008000000010000009200"
+  },
+  {
+    "id": "ctc_485_white_marlin",
+    "name": "White Marlin",
+    "difficulty": "hard",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=485",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "012030450560000000300000002070015000000609000000420080100000003000000024083040570"
+  },
+  {
+    "id": "ctc_436_arbitrary_code_execution",
+    "name": "Arbitrary Code Execution",
+    "difficulty": "medium",
+    "author": "Jovial",
+    "reference": "https://crackingthecryptic.com/sudoku?id=436",
+    "description": "Classic sudoku by Jovial, featured on Cracking the Cryptic. 32 given digits.",
+    "givens": "000000000000007000073201056035024610102603504640510032350102460000800000000000000"
+  },
+  {
+    "id": "ctc_435_can_t_teach_an_old_dog",
+    "name": "Can't Teach An Old Dog",
+    "difficulty": "hard",
+    "author": "Jovial",
+    "reference": "https://crackingthecryptic.com/sudoku?id=435",
+    "description": "Classic sudoku by Jovial, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "540000069700100005000030000020004000006000400000900020000050000800001006470000038"
+  },
+  {
+    "id": "ctc_484_antidote",
+    "name": "Antidote",
+    "difficulty": "hard",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=484",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 23 given digits.",
+    "givens": "803760000020000600100500070508000000900000007000000406080009003009000020000084100"
+  },
+  {
+    "id": "ctc_483_smile",
+    "name": "Smile",
+    "difficulty": "hard",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=483",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 27 given digits.",
+    "givens": "006000400010000050200605001400507003900000002301000509600234005030000060005000300"
+  },
+  {
+    "id": "ctc_467_pipeline",
+    "name": "pipeline",
+    "difficulty": "hard",
+    "author": "Mith",
+    "reference": "https://crackingthecryptic.com/sudoku?id=467",
+    "description": "Classic sudoku by Mith, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "000300100040100050902000000000006005350000089700900000000000302030008040006002000"
+  },
+  {
+    "id": "ctc_1581_long_distance_relationship",
+    "name": "Long Distance Relationship",
+    "difficulty": "hard",
+    "author": "RiSa",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1581",
+    "description": "Classic sudoku by RiSa, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "100409008050080090003000400200100007010000020300002005004000700030090060500203001"
+  },
+  {
+    "id": "ctc_1279_fancy_vase",
+    "name": "Fancy Vase",
+    "difficulty": "medium",
+    "author": "Qinlux",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1279",
+    "description": "Classic sudoku by Qinlux, featured on Cracking the Cryptic. 29 given digits.",
+    "givens": "000000000020900380030100750048020000050006000760500410400003000200845670075200000"
+  },
+  {
+    "id": "ctc_481_kingda_ka",
+    "name": "Kingda Ka",
+    "difficulty": "hard",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=481",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "000406000012030500000000070800004007060700050500080009003000020000090010000305000"
+  },
+  {
+    "id": "ctc_480_binary_fission",
+    "name": "Binary Fission",
+    "difficulty": "hard",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=480",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "005020600090004010200500003006030000000801000000090400300002007010900050004060800"
+  },
+  {
+    "id": "ctc_668_computer_solver_freaks_out",
+    "name": "Computer Solver Freaks Out",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=668",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 27 given digits.",
+    "givens": "000102000008060705090000080400010000080304060300020800060005470005070609070000050"
+  },
+  {
+    "id": "ctc_1278_noxing",
+    "name": "noXing",
+    "difficulty": "hard",
+    "author": "Qinlux",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1278",
+    "description": "Classic sudoku by Qinlux, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "600504300009000000100000005800053006065007000400900007010040090002080000000305204"
+  },
+  {
+    "id": "ctc_478_patto_patto",
+    "name": "Patto Patto",
+    "difficulty": "easy",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=478",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 36 given digits.",
+    "givens": "023065089900004005500900000600300018380590002000086300230000006807020003096053820"
+  },
+  {
+    "id": "ctc_206_cobra_roll",
+    "name": "Cobra Roll",
+    "difficulty": "hard",
+    "author": "Jovial",
+    "reference": "https://crackingthecryptic.com/sudoku?id=206",
+    "description": "Classic sudoku by Jovial, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "002300500010040090000500006076000000800020040900000803000005002000006010000870000"
+  },
+  {
+    "id": "ctc_1301_steering_wheel",
+    "name": "Steering Wheel",
+    "difficulty": "very hard",
+    "author": "SudokuExplorer",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1301",
+    "description": "Classic sudoku by SudokuExplorer, featured on Cracking the Cryptic. 20 given digits.",
+    "givens": "000102000060000070008000900400000003050007000200080001009000805070000060000304000"
+  },
+  {
+    "id": "ctc_667_the_xy_ring",
+    "name": "The XY Ring",
+    "difficulty": "very hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=667",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 20 given digits.",
+    "givens": "000000000008040100010203090004000600070000020001000500020307010005060400000000000"
+  },
+  {
+    "id": "ctc_421_hanabi",
+    "name": "Hanabi",
+    "difficulty": "medium",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=421",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 33 given digits.",
+    "givens": "012070350300201407400500016200000070160080002048000630000800004000150003000043120"
+  },
+  {
+    "id": "ctc_419_valtari",
+    "name": "Valtari",
+    "difficulty": "hard",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=419",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 25 given digits.",
+    "givens": "400000002005082900020000030008010000560090078000060500010000060006150700300000004"
+  },
+  {
+    "id": "ctc_1626_give_me_an_x_give_me_a_v",
+    "name": "Give Me an X, Give Me a V",
+    "difficulty": "very hard",
+    "author": "aPete",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1626",
+    "description": "Classic sudoku by aPete, featured on Cracking the Cryptic. 15 given digits.",
+    "givens": "805000000010030000000800001600000000020000040000000800400600000000020030000000600"
+  },
+  {
+    "id": "ctc_683_learning_to_solve_hard_sudoku",
+    "name": "Learning to Solve Hard Sudoku",
+    "difficulty": "hard",
+    "author": "Doulani",
+    "reference": "https://crackingthecryptic.com/sudoku?id=683",
+    "description": "Classic sudoku by Doulani, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "100072000520000800003000090000901003041000620000603005005000070630000100200034000"
+  },
+  {
+    "id": "ctc_200_classic_sudoku",
+    "name": "Classic Sudoku",
+    "difficulty": "hard",
+    "author": "Jovial",
+    "reference": "https://crackingthecryptic.com/sudoku?id=200",
+    "description": "Classic sudoku by Jovial, featured on Cracking the Cryptic. 25 given digits.",
+    "givens": "003047500000000000600000109700906008020080070800301005901000004000000000006530700"
+  },
+  {
+    "id": "ctc_799_gridlocked",
+    "name": "Gridlocked",
+    "difficulty": "hard",
+    "author": "Snyder",
+    "reference": "https://crackingthecryptic.com/sudoku?id=799",
+    "description": "Classic sudoku by Snyder, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "706000109000000000300104007003205600000000000009807400200708004000000000608000901"
+  },
+  {
+    "id": "ctc_464_22_clues_7_rows",
+    "name": "22 Clues 7 Rows",
+    "difficulty": "hard",
+    "author": "Mith",
+    "reference": "https://crackingthecryptic.com/sudoku?id=464",
+    "description": "Classic sudoku by Mith, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "000000000003010400100509000000020650350000089079030000000203008004060200000000000"
+  },
+  {
+    "id": "ctc_664_the_expert_s_sudoku_technique",
+    "name": "The Expert's Sudoku Technique",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=664",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 23 given digits.",
+    "givens": "002010300040700000500000904090001000600090005000300090804000006000008010003070200"
+  },
+  {
+    "id": "ctc_418_monte",
+    "name": "Monte",
+    "difficulty": "medium",
+    "author": "Shye",
+    "reference": "https://crackingthecryptic.com/sudoku?id=418",
+    "description": "Classic sudoku by Shye, featured on Cracking the Cryptic. 29 given digits.",
+    "givens": "604305201000000000015000760000403002002050100700201000026000810000000000503102604"
+  },
+  {
+    "id": "ctc_662_teaching_the_x_wing",
+    "name": "Teaching the X-wing",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=662",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "100200300300400500006007002007002005000000000500300100800100200002003001005008006"
+  },
+  {
+    "id": "ctc_661_human_logic_trumps_computer",
+    "name": "Human Logic Trumps Computer",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=661",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 25 given digits.",
+    "givens": "701030000080706000003050900000402090000070105000005080100000309030000060905000001"
+  },
+  {
+    "id": "ctc_459_tatooine_sunset",
+    "name": "Tatooine Sunset",
+    "difficulty": "very hard",
+    "author": "Mith",
+    "reference": "https://crackingthecryptic.com/sudoku?id=459",
+    "description": "Classic sudoku by Mith, featured on Cracking the Cryptic. 21 given digits.",
+    "givens": "000000000009800007080060050050040030007900002000000000002700009040050060300006200"
+  },
+  {
+    "id": "ctc_660_stripe_sudoku",
+    "name": "Stripe Sudoku",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=660",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 25 given digits.",
+    "givens": "000000012000000345000003670000081500000754000004230000067900000312000000850000000"
+  },
+  {
+    "id": "ctc_995_how_do_grandmasters_solve_so_f",
+    "name": "How do Grandmasters Solve so Fast",
+    "difficulty": "hard",
+    "author": "Collyer",
+    "reference": "https://crackingthecryptic.com/sudoku?id=995",
+    "description": "Classic sudoku by Collyer, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "000006040800050002070400900006003010500000003040100700003009060200080005010700000"
+  },
+  {
+    "id": "ctc_1326_4x4_magic_square",
+    "name": "4x4 Magic Square",
+    "difficulty": "very hard",
+    "author": "Cam",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1326",
+    "description": "Classic sudoku by Cam, featured on Cracking the Cryptic. 17 given digits.",
+    "givens": "000690002400000000090008000000000005000905000000000000000500470000000806600017000"
+  },
+  {
+    "id": "ctc_559_svs_266_tic_tac_toe",
+    "name": "SVS(266) Tic Tac Toe",
+    "difficulty": "hard",
+    "author": "Richard",
+    "reference": "https://crackingthecryptic.com/sudoku?id=559",
+    "description": "Classic sudoku by Richard, featured on Cracking the Cryptic. 23 given digits.",
+    "givens": "704000203000000000800709006001000500200000008503000904000000000000502000026070450"
+  },
+  {
+    "id": "ctc_658_unbelievable_masterpiece",
+    "name": "Unbelievable Masterpiece",
+    "difficulty": "medium",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=658",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 28 given digits.",
+    "givens": "840506073600708002000000000310000024000000000280000065000000000100803007750401086"
+  },
+  {
+    "id": "ctc_1324_goldilocks_sudoku",
+    "name": "Goldilocks Sudoku",
+    "difficulty": "hard",
+    "author": "Cam",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1324",
+    "description": "Classic sudoku by Cam, featured on Cracking the Cryptic. 27 given digits.",
+    "givens": "201070800040000030800200005470065093605000000000000000000340600004700010790050008"
+  },
+  {
+    "id": "ctc_655_how_to_find_x_wings",
+    "name": "How to find X-wings",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=655",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "000102000030040010500607008070010020000409000050020030800901006010070050000304000"
+  },
+  {
+    "id": "ctc_1153_bonus_linked_no_4",
+    "name": "Bonus Linked No. 4",
+    "difficulty": "very hard",
+    "author": "Kumar",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1153",
+    "description": "Classic sudoku by Kumar, featured on Cracking the Cryptic. 14 given digits.",
+    "givens": "000000000000060000000902000001700500030000070006005900000206000000030000000000000"
+  },
+  {
+    "id": "ctc_1152_bonus_linked_no_3",
+    "name": "Bonus Linked No. 3",
+    "difficulty": "very hard",
+    "author": "Kumar",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1152",
+    "description": "Classic sudoku by Kumar, featured on Cracking the Cryptic. 16 given digits.",
+    "givens": "000000000400000006090000010002000900000309000005206100060000070200000001000000000"
+  },
+  {
+    "id": "ctc_1151_bonus_linked_no_2",
+    "name": "Bonus Linked No. 2",
+    "difficulty": "very hard",
+    "author": "Kumar",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1151",
+    "description": "Classic sudoku by Kumar, featured on Cracking the Cryptic. 13 given digits.",
+    "givens": "000000000000000000000309000109000502000000000604000309000206000000000000000040000"
+  },
+  {
+    "id": "ctc_1150_bonus_linked_no_1",
+    "name": "Bonus Linked No. 1",
+    "difficulty": "very hard",
+    "author": "Kumar",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1150",
+    "description": "Classic sudoku by Kumar, featured on Cracking the Cryptic. 20 given digits.",
+    "givens": "000050000000406000003000700020507080100000009070309010006000200000803000000040000"
+  },
+  {
+    "id": "ctc_652_hidden_pairs",
+    "name": "Hidden Pairs",
+    "difficulty": "very hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=652",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 21 given digits.",
+    "givens": "100020003020400050005000600000000070300060001080000000008000200070001040600030009"
+  },
+  {
+    "id": "ctc_1526_beyond_diabolical",
+    "name": "Beyond Diabolical",
+    "difficulty": "hard",
+    "author": "DerekNeal",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1526",
+    "description": "Classic sudoku by DerekNeal, featured on Cracking the Cryptic. 27 given digits.",
+    "givens": "100400700020050080003006009010040070002005008900300600700008002800200900090070010"
+  },
+  {
+    "id": "ctc_1149_8_minute_clone",
+    "name": "8 Minute Clone",
+    "difficulty": "very hard",
+    "author": "Kumar",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1149",
+    "description": "Classic sudoku by Kumar, featured on Cracking the Cryptic. 18 given digits.",
+    "givens": "200000080000000702000006010000050900000408000003070000020600000105000000040000001"
+  },
+  {
+    "id": "ctc_501_pi_sudoku",
+    "name": "Pi Sudoku",
+    "difficulty": "very hard",
+    "author": "Aad",
+    "reference": "https://crackingthecryptic.com/sudoku?id=501",
+    "description": "Classic sudoku by Aad, featured on Cracking the Cryptic. 21 given digits.",
+    "givens": "000431000008000400030000010200000005300060009900000002070000060009000500000853000"
+  },
+  {
+    "id": "ctc_651_hardest_sudoku",
+    "name": "Hardest Sudoku",
+    "difficulty": "very hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=651",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 14 given digits.",
+    "givens": "000001200000000340000000056000000007000000000100000000720000000048000000006300000"
+  },
+  {
+    "id": "ctc_497_the_roaring_four_t_s",
+    "name": "The Roaring Four-T's",
+    "difficulty": "very hard",
+    "author": "Aad",
+    "reference": "https://crackingthecryptic.com/sudoku?id=497",
+    "description": "Classic sudoku by Aad, featured on Cracking the Cryptic. 8 given digits.",
+    "givens": "000000000200000068000000000050000000000000001007000000000380000000000000000000000"
+  },
+  {
+    "id": "ctc_1080_in_memoriam",
+    "name": "In Memoriam",
+    "difficulty": "medium",
+    "author": "Holaysan",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1080",
+    "description": "Classic sudoku by Holaysan, featured on Cracking the Cryptic. 29 given digits.",
+    "givens": "970210005000000007056000030300700150000802060009003478010000080234605090000000000"
+  },
+  {
+    "id": "ctc_496_t_sudoku",
+    "name": "T Sudoku",
+    "difficulty": "very hard",
+    "author": "Aad",
+    "reference": "https://crackingthecryptic.com/sudoku?id=496",
+    "description": "Classic sudoku by Aad, featured on Cracking the Cryptic. 14 given digits.",
+    "givens": "000005093080000060000001005000000000000000601000020009000000000430000002000000000"
+  },
+  {
+    "id": "ctc_1525_the_stinger",
+    "name": "The Stinger",
+    "difficulty": "hard",
+    "author": "DerekNeal",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1525",
+    "description": "Classic sudoku by DerekNeal, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "800060009020040080000109000001000400460000005005090600009506800070020090200010007"
+  },
+  {
+    "id": "ctc_495_5_sudoku",
+    "name": "<=5 Sudoku",
+    "difficulty": "very hard",
+    "author": "Aad",
+    "reference": "https://crackingthecryptic.com/sudoku?id=495",
+    "description": "Classic sudoku by Aad, featured on Cracking the Cryptic. 11 given digits.",
+    "givens": "000000001080000000000000000800010000003062000000000000000000090407900000000000000"
+  },
+  {
+    "id": "ctc_718_less_than_15_sudoku",
+    "name": "Less than 15 Sudoku",
+    "difficulty": "hard",
+    "author": "Bastien",
+    "reference": "https://crackingthecryptic.com/sudoku?id=718",
+    "description": "Classic sudoku by Bastien, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "503000010020400003100030000300004000010000500002000030200300001030040020004007305"
+  },
+  {
+    "id": "ctc_795_three_ring_circus",
+    "name": "Three Ring Circus",
+    "difficulty": "hard",
+    "author": "Snyder",
+    "reference": "https://crackingthecryptic.com/sudoku?id=795",
+    "description": "Classic sudoku by Snyder, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "034000670200000008100040009000803000007000500000206000300010005700000006069000140"
+  },
+  {
+    "id": "ctc_649_hard_in_10_minutes",
+    "name": "Hard in 10 Minutes",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=649",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "001203400000607000500000003370000081000000000620000037100000008000805000006402500"
+  },
+  {
+    "id": "ctc_1524_celebrating_50k_subs",
+    "name": "Celebrating 50k Subs",
+    "difficulty": "medium",
+    "author": "DerekNeal",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1524",
+    "description": "Classic sudoku by DerekNeal, featured on Cracking the Cryptic. 32 given digits.",
+    "givens": "231000000050000000060000052078915003000008004026407891000302010089751020000000030"
+  },
+  {
+    "id": "ctc_714_spot_the_initial_trick",
+    "name": "Spot the Initial Trick",
+    "difficulty": "very hard",
+    "author": "Bastien",
+    "reference": "https://crackingthecryptic.com/sudoku?id=714",
+    "description": "Classic sudoku by Bastien, featured on Cracking the Cryptic. 20 given digits.",
+    "givens": "081000000200600000500400100019007000000000000000200640003009008000001007000000320"
+  },
+  {
+    "id": "ctc_1147_the_schizophrenic_sudoku",
+    "name": "The Schizophrenic Sudoku",
+    "difficulty": "very hard",
+    "author": "Kumar",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1147",
+    "description": "Classic sudoku by Kumar, featured on Cracking the Cryptic. 20 given digits.",
+    "givens": "000040090000009006009000700000700060100060005020005000003000400200400050070050000"
+  },
+  {
+    "id": "ctc_712_stunning_sudoku_from_france",
+    "name": "Stunning Sudoku from France",
+    "difficulty": "very hard",
+    "author": "Bastien",
+    "reference": "https://crackingthecryptic.com/sudoku?id=712",
+    "description": "Classic sudoku by Bastien, featured on Cracking the Cryptic. 16 given digits.",
+    "givens": "000000080000000706000001020000060500000905000008030000080100000507000000090000000"
+  },
+  {
+    "id": "ctc_585_classic",
+    "name": "Classic",
+    "difficulty": "hard",
+    "author": "Richard",
+    "reference": "https://crackingthecryptic.com/sudoku?id=585",
+    "description": "Classic sudoku by Richard, featured on Cracking the Cryptic. 22 given digits.",
+    "givens": "000400002003050400020600090107000000080000020000000905030008010002010500400003000"
+  },
+  {
+    "id": "ctc_648_jellyfish",
+    "name": "Jellyfish",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=648",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "020000030400000007001230400004150300005640100000000000002510600500000090080000005"
+  },
+  {
+    "id": "ctc_646_extreme_sudoku_made_easy",
+    "name": "Extreme Sudoku made Easy",
+    "difficulty": "medium",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=646",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 30 given digits.",
+    "givens": "002001040051094000040260000010045000036000510000310020000026050000480360020100400"
+  },
+  {
+    "id": "ctc_645_how_many_x_wings",
+    "name": "How Many X-Wings",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=645",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 24 given digits.",
+    "givens": "001200008003400002500003100600001800000000000009300005004800003100006700800004500"
+  },
+  {
+    "id": "ctc_1523_diabolical_excalibur",
+    "name": "Diabolical Excalibur!",
+    "difficulty": "hard",
+    "author": "DerekNeal",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1523",
+    "description": "Classic sudoku by DerekNeal, featured on Cracking the Cryptic. 26 given digits.",
+    "givens": "100000009020090007003780000004030000065104000000029600000005480000000702840000091"
+  },
+  {
+    "id": "ctc_644_diabolical_sudoku",
+    "name": "Diabolical Sudoku",
+    "difficulty": "medium",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=644",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 29 given digits.",
+    "givens": "120304078300807009000000000290000084000080000780000013000000000400902006930108047"
+  },
+  {
+    "id": "ctc_1522_diabolical_simple_trick",
+    "name": "Diabolical Simple Trick",
+    "difficulty": "hard",
+    "author": "DerekNeal",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1522",
+    "description": "Classic sudoku by DerekNeal, featured on Cracking the Cryptic. 27 given digits.",
+    "givens": "170048600008025037090000000400070800020050001060003070030000700900007040000010002"
+  },
+  {
+    "id": "ctc_1521_hidden_triple",
+    "name": "Hidden Triple",
+    "difficulty": "medium",
+    "author": "DerekNeal",
+    "reference": "https://crackingthecryptic.com/sudoku?id=1521",
+    "description": "Classic sudoku by DerekNeal, featured on Cracking the Cryptic. 32 given digits.",
+    "givens": "800000100010790560007108040570020400008010795103050080701003006000000010002001900"
+  },
+  {
+    "id": "ctc_2245_antidiagonal",
+    "name": "Antidiagonal",
+    "difficulty": "very hard",
+    "author": "Wei-Hwa Huang",
+    "reference": "https://crackingthecryptic.com/sudoku?id=2245",
+    "description": "Classic sudoku by Wei-Hwa Huang, featured on Cracking the Cryptic. 17 given digits.",
+    "givens": "000000090001200000080030000070040002006500000000000870000001005300002000000000300"
+  },
+  {
+    "id": "ctc_643_find_that_shape",
+    "name": "Find that Shape",
+    "difficulty": "hard",
+    "author": "Feadoor",
+    "reference": "https://crackingthecryptic.com/sudoku?id=643",
+    "description": "Classic sudoku by Feadoor, featured on Cracking the Cryptic. 23 given digits.",
+    "givens": "102000000030002009400030072000000000003000004040000026000000000005004097096057080"
+  },
+  {
+    "id": "ctc_914_top_heavy",
+    "name": "Top Heavy",
+    "difficulty": "very hard",
+    "author": "Yürekli",
+    "reference": "https://crackingthecryptic.com/sudoku?id=914",
+    "description": "Classic sudoku by Yürekli, featured on Cracking the Cryptic. 17 given digits.",
+    "givens": "000502000102000500000000000004000001000234000300000200000000000001000604000603000"
+  },
+  {
+    "id": "ctc_56_diagonal_sudoku",
+    "name": "Diagonal Sudoku",
+    "difficulty": "very hard",
+    "author": "Collyer",
+    "reference": "https://crackingthecryptic.com/sudoku?id=56",
+    "description": "Classic sudoku by Collyer, featured on Cracking the Cryptic. 18 given digits.",
+    "givens": "000000000100079600200000030300000010040000020050000007060000002007890005000000000"
+  },
+  {
+    "id": "ctc_790_diagonals",
+    "name": "Diagonals",
+    "difficulty": "hard",
+    "author": "Snyder",
+    "reference": "https://crackingthecryptic.com/sudoku?id=790",
+    "description": "Classic sudoku by Snyder, featured on Cracking the Cryptic. 23 given digits.",
+    "givens": "070060009600500080004000700030006000200050008000400010003000400020007003100080020"
   }
 ]
