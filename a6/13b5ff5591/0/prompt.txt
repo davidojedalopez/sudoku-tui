@@ -1,0 +1,15 @@
+Find a way to import all Sudokus available at this link: https://crackingthecryptic.com/filter?filter=CLASSIC&difficultyfilter=ALL&filtertext=
+
+---
+
+[Request interrupted by user]
+
+---
+
+Find a way to import all Sudokus available at this link: https://crackingthecryptic.com/filter?filter=CLASSIC&difficultyfilter=ALL&filtertext=
+
+The link contain the name of the puzzle, and in parenthesis, the name of the author. I want to keep the attribution to them and to this webpage.
+
+---
+
+commit, don't push
