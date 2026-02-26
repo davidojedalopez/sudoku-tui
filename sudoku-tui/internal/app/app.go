@@ -66,7 +66,10 @@ func (a *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			a.history = historyscreen.New(a.theme, a.store)
 			return a, a.history.Init()
 		case msgs.ScreenLibrary:
-			return a, a.library.Init()
+			return a, tea.Batch(
+				a.library.Init(),
+				func() tea.Msg { return tea.WindowSizeMsg{Width: a.width, Height: a.height} },
+			)
 		case msgs.ScreenMenu:
 			return a, a.menu.Init()
 		}
