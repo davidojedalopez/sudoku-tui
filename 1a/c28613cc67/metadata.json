@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.4.7",
+  "checkpoint_id": "1ac28613cc67",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "sudoku-tui/internal/curated/curated.json",
+    "sudoku-tui/internal/curated/loader.go",
+    "sudoku-tui/internal/screen/library/library.go"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1a/c28613cc67/0/metadata.json",
+      "transcript": "/1a/c28613cc67/0/full.jsonl",
+      "context": "/1a/c28613cc67/0/context.md",
+      "content_hash": "/1a/c28613cc67/0/content_hash.txt",
+      "prompt": "/1a/c28613cc67/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1282,
+    "cache_creation_tokens": 329596,
+    "cache_read_tokens": 3172711,
+    "output_tokens": 12341,
+    "api_call_count": 33
+  }
+}

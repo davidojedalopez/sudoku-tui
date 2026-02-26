@@ -1,0 +1,9 @@
+Work on @Tasks/006 Puzzle library's contents.md
+
+---
+
+Great. Now, increase the width of the containers so we can show the full name of the puzzle names, and also to show the complete URL of the source of the board. See attached image for an evidence on how it looks like right now.
+
+---
+
+Good. Commit and push
