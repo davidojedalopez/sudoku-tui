@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.4.7",
+  "checkpoint_id": "22b981fa33ed",
+  "session_id": "6c78ee0e-8b3c-43bd-9776-5135cc7d2686",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-26T01:38:05.060403Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "sudoku-tui/internal/screen/library/library.go",
+    "sudoku-tui/internal/theme/default.go",
+    "sudoku-tui/internal/theme/theme.go"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "ec583e4be6ed",
+  "token_usage": {
+    "input_tokens": 23,
+    "cache_creation_tokens": 129869,
+    "cache_read_tokens": 1134538,
+    "output_tokens": 2036,
+    "api_call_count": 19
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-26T01:38:05.017169Z",
+    "agent_lines": 121,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 121,
+    "agent_percentage": 100
+  }
+}
