@@ -14,12 +14,14 @@ import (
 
 // Model is the puzzle library screen.
 type Model struct {
-	puzzles []curated.Puzzle
-	cursor  int
-	filter  string
-	width   int
-	height  int
-	theme   *theme.Theme
+	puzzles      []curated.Puzzle
+	cursor       int
+	scrollOffset int // index of the first visible list item
+	listHeight   int // visible list rows (set each render, used by Update)
+	filter       string
+	width        int
+	height       int
+	theme        *theme.Theme
 }
 
 // New creates a new library screen model.
@@ -48,11 +50,30 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
+				if m.cursor < m.scrollOffset {
+					m.scrollOffset = m.cursor
+				}
 			}
 		case "down", "j":
 			filtered := m.filtered()
 			if m.cursor < len(filtered)-1 {
 				m.cursor++
+				if h := m.visibleHeight(); m.cursor >= m.scrollOffset+h {
+					m.scrollOffset = m.cursor - h + 1
+				}
+			}
+		case "pgdown":
+			filtered := m.filtered()
+			h := m.visibleHeight()
+			m.cursor = min(m.cursor+h, len(filtered)-1)
+			if m.cursor >= m.scrollOffset+h {
+				m.scrollOffset = m.cursor - h + 1
+			}
+		case "pgup":
+			h := m.visibleHeight()
+			m.cursor = max(m.cursor-h, 0)
+			if m.cursor < m.scrollOffset {
+				m.scrollOffset = m.cursor
 			}
 		case "enter":
 			filtered := m.filtered()
@@ -78,6 +99,15 @@ func (m *Model) filtered() []curated.Puzzle {
 		}
 	}
 	return result
+}
+
+// visibleHeight returns the number of list rows currently visible.
+// Falls back to a safe default before the first render.
+func (m *Model) visibleHeight() int {
+	if m.listHeight > 0 {
+		return m.listHeight
+	}
+	return 20
 }
 
 func (m *Model) loadPuzzle(p curated.Puzzle) tea.Cmd {
@@ -135,6 +165,17 @@ func (m *Model) View() string {
 
 	header := th.Header.Bar.Width(m.width).Render(" " + th.Header.Title.Render("PUZZLE LIBRARY"))
 
+	hints := th.Footer.KeyHint.Render("j/k") + th.Footer.KeyLabel.Render(" Scroll") +
+		"   " + th.Footer.KeyHint.Render("PgDn/PgUp") + th.Footer.KeyLabel.Render(" Page") +
+		"   " + th.Footer.KeyHint.Render("Enter") + th.Footer.KeyLabel.Render(" Load") +
+		"   " + th.Footer.KeyHint.Render("Esc") + th.Footer.KeyLabel.Render(" Back")
+	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
+
+	bodyHeight := m.height - lipgloss.Height(header) - lipgloss.Height(footer)
+	if bodyHeight < 1 {
+		bodyHeight = 1
+	}
+
 	// Overhead: 2 (list border) + 2 ("  " separator) + 2 (detail border) = 6
 	// No body indent – panels extend to the screen edges.
 	// Allocate list first (min 29 so 17-char names fit), then give remainder to detail.
@@ -151,6 +192,13 @@ func (m *Model) View() string {
 		detailWidth = 27
 	}
 
+	// Compute how many list rows fit inside the panel border (2 lines overhead).
+	lh := bodyHeight - 2
+	if lh < 1 {
+		lh = 1
+	}
+	m.listHeight = lh
+
 	list := m.renderList(filtered, listWidth)
 	detail := m.renderDetail(filtered, detailWidth)
 
@@ -160,12 +208,6 @@ func (m *Model) View() string {
 		th.Library.PanelBorder.Width(detailWidth).Render(detail),
 	)
 
-	hints := th.Footer.KeyHint.Render("j/k") + th.Footer.KeyLabel.Render(" Scroll") +
-		"   " + th.Footer.KeyHint.Render("Enter") + th.Footer.KeyLabel.Render(" Load") +
-		"   " + th.Footer.KeyHint.Render("Esc") + th.Footer.KeyLabel.Render(" Back")
-	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
-
-	bodyHeight := m.height - 2 - lipgloss.Height(footer)
 	body := lipgloss.NewStyle().Height(bodyHeight).Render(panels)
 
 	return lipgloss.JoinVertical(lipgloss.Left, header, body, footer)
@@ -173,8 +215,20 @@ func (m *Model) View() string {
 
 func (m *Model) renderList(puzzles []curated.Puzzle, width int) string {
 	th := m.theme
+	if len(puzzles) == 0 {
+		return th.Library.Item.Render("  No puzzles found.")
+	}
+
+	h := m.visibleHeight()
+	start := m.scrollOffset
+	end := start + h
+	if end > len(puzzles) {
+		end = len(puzzles)
+	}
+
 	var lines []string
-	for i, p := range puzzles {
+	for i := start; i < end; i++ {
+		p := puzzles[i]
 		badge := m.diffBadge(p.Difficulty)
 		name := p.Name
 		maxNameLen := width - 12
@@ -191,9 +245,6 @@ func (m *Model) renderList(puzzles []curated.Puzzle, width int) string {
 			line = th.Library.Item.Render("  "+name) + "  " + badge
 		}
 		lines = append(lines, line)
-	}
-	if len(puzzles) == 0 {
-		lines = append(lines, th.Library.Item.Render("  No puzzles found."))
 	}
 	return strings.Join(lines, "\n")
 }
