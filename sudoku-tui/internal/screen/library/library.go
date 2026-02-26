@@ -108,7 +108,7 @@ func parseDiff(s string) generator.Difficulty {
 		return generator.Medium
 	case "hard":
 		return generator.Hard
-	case "expert":
+	case "expert", "very hard":
 		return generator.Expert
 	}
 	return generator.Medium
@@ -277,7 +277,7 @@ func (m *Model) diffBadge(diff string) string {
 		return th.Badges.Medium.Render("MEDIUM")
 	case "hard":
 		return th.Badges.Hard.Render("HARD")
-	case "expert":
+	case "expert", "very hard":
 		return th.Badges.Expert.Render("EXPERT")
 	}
 	return diff
