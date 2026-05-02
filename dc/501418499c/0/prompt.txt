@@ -1,0 +1,5 @@
+You forgot to update the "Menus" section with the new navigation
+
+---
+
+Specify that shift + number puts a digit, but as a note
