@@ -2,6 +2,8 @@
 
 Terminal Sudoku built in Go with Bubble Tea.
 
+![sudoku-tui demo](vhs/demo.gif)
+
 ## What it does
 
 - Starts in a full-screen TUI with a main menu.
