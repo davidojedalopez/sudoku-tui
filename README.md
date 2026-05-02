@@ -33,15 +33,16 @@ make build
 
 ### Menus
 
-- `j` / `k` or arrow keys: move
+- `w` / `s` or arrow keys: move
 - `Enter` / `Space`: select
-- `Esc`: back
-- `q` or `Ctrl+C`: quit
+- `Esc` or `q`: back
+- `Ctrl+C`: quit
 
 ### In game
 
 - Arrow keys or `w` `a` `s` `d`: move cursor
-- `1`-`9` or `Shift+1`-`Shift+9`: place a digit
+- `1`-`9`: place a digit
+- `Shift+1`-`Shift+9`: place a digit as a note
 - `n`: toggle note mode
 - `x`, `Backspace`, or `Delete`: erase
 - `u` or `Ctrl+Z`: undo
