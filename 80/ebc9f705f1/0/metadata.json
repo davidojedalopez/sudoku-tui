@@ -1,0 +1,131 @@
+{
+  "cli_version": "0.5.6",
+  "checkpoint_id": "80ebc9f705f1",
+  "session_id": "7b78b981-897b-4b11-adc2-4fa55997e9e1",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-02T01:24:43.102082646Z",
+  "branch": "main",
+  "checkpoints_count": 12,
+  "files_touched": [
+    "bin/sudoku-tui",
+    "internal/screen/game/game.go",
+    "internal/screen/game/input.go",
+    "internal/screen/game/view.go",
+    "internal/screen/historyscreen/history.go",
+    "internal/screen/library/library.go",
+    "internal/screen/menu/menu.go",
+    "internal/theme/default.go",
+    "internal/theme/theme.go"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-6",
+  "turn_id": "e9c1a6186c74",
+  "token_usage": {
+    "input_tokens": 124,
+    "cache_creation_tokens": 84045,
+    "cache_read_tokens": 6391433,
+    "output_tokens": 47595,
+    "api_call_count": 99
+  },
+  "session_metrics": {
+    "turn_count": 13
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-02T01:24:43.070262851Z",
+    "agent_lines": 85,
+    "agent_removed": 49,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 85,
+    "total_lines_changed": 134,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2,
+      "agent_lines_removed": 2
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 9,
+      "agent_lines_removed": 2
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 23,
+      "agent_lines_removed": 6
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 23,
+      "agent_lines_removed": 6
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 31,
+      "agent_lines_removed": 9
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 49,
+      "agent_lines_removed": 11
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 40,
+      "agent_lines_removed": 11
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 40,
+      "agent_lines_removed": 11
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 57,
+      "agent_lines_removed": 21
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 58,
+      "agent_lines_removed": 22
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 84,
+      "agent_lines_removed": 48
+    }
+  ]
+}

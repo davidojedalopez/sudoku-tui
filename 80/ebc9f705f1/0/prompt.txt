@@ -1,0 +1,51 @@
+Take a look a this sudoku TUI repo, and make me a proposal to achieve a square grid of the sudoku board, instead of a rectangle-ish one.
+
+---
+
+Yes
+
+---
+
+Good. Now, when you put a cell correctly, it shows a notice down below that shifts the entire board up a little, making it go off bounds. Fix it, so that the box/notice down below does not cause this shift.
+
+---
+
+Good. Now, make the numbers bigger without making the squares bigger
+
+---
+
+Make them slightly smaller now.
+
+---
+
+Good. Now, when I select a number in a cell, I get the other cells with the same number highligthed. I
+  want to also higlight the cells that have notes for that same number, but with a slightly different
+  highlight, so I can differentiate between them.
+
+---
+
+Good. When we select a cell and then highlight other cells with that same number, I want to also highlight the entire row and column they are part of. This excludes notes. For notes, do not highlight rows and columns, just cells
+
+---
+
+It turns out this is way to helpful and people would discover places to put numbers more easily. Let's remove some of it. Instead of highlighting the entire row and column for all cells with a selected number, just highlight the row and column of the selected cell.
+
+---
+
+Not sure if this happens in all themes, but the highlighted cells for the same number are way to dim that I can barely differentiate them. Fix that for all themes. Check this image example: [Image #2]
+
+---
+
+Cool. Let's make the keyboard keys to move to be "wasd" instead of "hjkl". Also, let's add an additional way to put notes. Placing a number while pressing SHIFT, should put a note instead of the number.
+
+---
+
+Good, but in the menu bar on the bottom, it still says "hjkl". Fix it
+
+---
+
+Make this movement the default on the menus, too. And update the bottom bar.
+
+---
+
+The footer hint on the main menu still says "jk"
