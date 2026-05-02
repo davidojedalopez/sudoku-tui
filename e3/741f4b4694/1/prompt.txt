@@ -1,0 +1,1 @@
+Use Charm's VHS to record a few GIFs of the features of this Sudoku TUI. Reference: https://github.com/charmbracelet/vhs
