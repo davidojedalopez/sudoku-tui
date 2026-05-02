@@ -40,12 +40,12 @@ make build
 
 ### In game
 
-- Arrow keys or `h` `j` `k` `l`: move cursor
-- `1`-`9`: place a digit
+- Arrow keys or `w` `a` `s` `d`: move cursor
+- `1`-`9` or `Shift+1`-`Shift+9`: place a digit
 - `n`: toggle note mode
 - `x`, `Backspace`, or `Delete`: erase
 - `u` or `Ctrl+Z`: undo
-- `Esc`: leave the current game and return to menu
+- `Esc` or `q`: leave the current game and return to menu
 
 ## Data files
 
