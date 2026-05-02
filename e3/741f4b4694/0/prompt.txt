@@ -1,0 +1,13 @@
+Review the vhs tapes we have at vhs, and update the "demo" one so that it shows the full Sudoku board on the GIF. Reference: https://github.com/charmbracelet/vhs
+
+---
+
+Something's odd, as the themes do not seem to switch. Let's make a few adjustments: Let's only switch to a different them than the default, and then move to start an EASY Sudoku and putting a couple of notes, and a digit. That should be enough for a demo. Play it slightly faster using VHS features
+
+---
+
+Okay, that is going to fast now. Make it slightly slower, and fix the issue where the GIF is not showing the theme update, it stays with the same. I want to switch a theme once
+
+---
+
+Looks good! Put that demo gif on the README, to showcase the TUI. Delete the other tapes and gifs

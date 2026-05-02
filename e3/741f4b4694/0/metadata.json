@@ -1,0 +1,100 @@
+{
+  "cli_version": "0.5.6",
+  "checkpoint_id": "e3741f4b4694",
+  "session_id": "019de664-0548-7502-87b3-1733de6497c0",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-02T02:34:32.038992563Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "README.md",
+    "bin/sudoku-tui"
+  ],
+  "agent": "Claude Code",
+  "model": "gpt-5.5",
+  "turn_id": "fc540abd8ec9",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-02T02:34:32.013067774Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 106,
+    "human_removed": 138,
+    "total_committed": 2,
+    "total_lines_changed": 244,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 465,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".codex/hooks.json": 66,
+        "AGENTS.md": 73,
+        "vhs/demo.tape": 118,
+        "vhs/gameplay.tape": 123,
+        "vhs/library.tape": 85
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 465,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 36,
+      "user_lines_removed": 82,
+      "agent_lines_added": 465,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "vhs/demo.tape": 36
+      },
+      "user_removed_per_file": {
+        "vhs/demo.tape": 82
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 35,
+      "user_lines_removed": 81,
+      "agent_lines_added": 465,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "vhs/demo.tape": 35
+      },
+      "user_removed_per_file": {
+        "vhs/demo.tape": 81
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 35,
+      "user_lines_removed": 81,
+      "agent_lines_added": 259,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "vhs/demo.tape": 35
+      },
+      "user_removed_per_file": {
+        "vhs/demo.tape": 81
+      }
+    }
+  ]
+}
