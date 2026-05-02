@@ -50,16 +50,16 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "esc":
+		case "esc", "q":
 			return m, func() tea.Msg { return msgs.NavigateMsg{To: msgs.ScreenMenu} }
-		case "up", "k":
+		case "up", "w":
 			if m.cursor > 0 {
 				m.cursor--
 				if m.cursor < m.page*pageSize {
 					m.page--
 				}
 			}
-		case "down", "j":
+		case "down", "s":
 			if m.cursor < len(m.entries)-1 {
 				m.cursor++
 				if m.cursor >= (m.page+1)*pageSize {
@@ -114,9 +114,9 @@ func (m *Model) View() string {
 	pagination := th.History.Pagination.Render(
 		fmt.Sprintf("  SHOWING %d-%d OF %d   PAGE %d/%d", start, end, total, m.page+1, pages))
 
-	hints := th.Footer.KeyHint.Render("j/k") + th.Footer.KeyLabel.Render(" Scroll") +
+	hints := th.Footer.KeyHint.Render("w/s") + th.Footer.KeyLabel.Render(" Scroll") +
 		"   " + th.Footer.KeyHint.Render("PgDn/PgUp") + th.Footer.KeyLabel.Render(" Page") +
-		"   " + th.Footer.KeyHint.Render("Esc") + th.Footer.KeyLabel.Render(" Back")
+		"   " + th.Footer.KeyHint.Render("Esc/q") + th.Footer.KeyLabel.Render(" Back")
 	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
 
 	body := lipgloss.JoinVertical(lipgloss.Left,

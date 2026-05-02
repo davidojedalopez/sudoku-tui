@@ -13,6 +13,8 @@ import (
 func (m *Model) renderBoard() string {
 	cursorVal := m.cursorValue()
 
+	cursorR, cursorC := m.cursor[0], m.cursor[1]
+
 	var rows []string
 
 	rows = append(rows, buildTopBorder())
@@ -23,7 +25,8 @@ func (m *Model) renderBoard() string {
 			rowStr.WriteString("║")
 			for c := 0; c < 9; c++ {
 				cell := m.board.Cells[r][c]
-				rowStr.WriteString(m.renderCellLine(r, c, line, cell, cursorVal))
+				inBand := r == cursorR || c == cursorC
+				rowStr.WriteString(m.renderCellLine(r, c, line, cell, cursorVal, inBand))
 				if (c+1)%3 == 0 {
 					rowStr.WriteString("║")
 				} else {
@@ -48,10 +51,11 @@ func (m *Model) renderBoard() string {
 }
 
 // renderCellLine renders one of the 3 lines of a cell.
-func (m *Model) renderCellLine(r, c, line int, cell board.Cell, cursorVal int) string {
+func (m *Model) renderCellLine(r, c, line int, cell board.Cell, cursorVal int, inBand bool) string {
 	th := m.theme
 	isCursor := r == m.cursor[0] && c == m.cursor[1]
 	isSameNum := cursorVal != 0 && cell.Value == cursorVal && !isCursor
+	isNoteMatch := cursorVal != 0 && cell.Value == 0 && cell.HasNote(cursorVal)
 
 	var style lipgloss.Style
 	switch {
@@ -61,6 +65,10 @@ func (m *Model) renderCellLine(r, c, line int, cell board.Cell, cursorVal int) s
 		style = th.Cell.Conflict
 	case isSameNum:
 		style = th.Cell.Highlight
+	case isNoteMatch:
+		style = th.Cell.NoteHighlight
+	case inBand:
+		style = th.Cell.BandHighlight
 	case cell.Kind == board.KindGiven:
 		style = th.Cell.Given
 	case cell.Kind == board.KindUser && cell.Value != 0:
@@ -70,16 +78,26 @@ func (m *Model) renderCellLine(r, c, line int, cell board.Cell, cursorVal int) s
 	}
 
 	content := cellContent(cell, line)
-	return style.Width(5).Align(lipgloss.Center).Render(content)
+	return style.Width(7).Align(lipgloss.Center).Render(content)
+}
+
+var bigDigits = [10][3]string{
+	{},
+	{"▄█ ", " █ ", " █ "},
+	{"▀▀█", "█▀▀", "█▄▄"},
+	{"▀▀█", "▀▀█", "▄▄█"},
+	{"█ █", "▀▀█", "  █"},
+	{"█▀▀", "▀▀█", "▄▄█"},
+	{"█▀▀", "█▀█", "█▄█"},
+	{"▀▀█", "  █", "  █"},
+	{"█▀█", "█▀█", "█▄█"},
+	{"█▀█", "▀▀█", "▄▄█"},
 }
 
 // cellContent returns the content string for line (0,1,2) of a cell.
 func cellContent(cell board.Cell, line int) string {
 	if cell.Value != 0 {
-		if line == 1 {
-			return fmt.Sprintf(" %d ", cell.Value)
-		}
-		return "   "
+		return bigDigits[cell.Value][line]
 	}
 
 	if !cell.HasAnyNote() {
@@ -119,7 +137,7 @@ func buildCellRowSep() string {
 }
 
 func cellBlock(fill, inner, box string) string {
-	cell := strings.Repeat(fill, 5)
+	cell := strings.Repeat(fill, 7)
 	var sb strings.Builder
 	for c := 0; c < 9; c++ {
 		sb.WriteString(cell)

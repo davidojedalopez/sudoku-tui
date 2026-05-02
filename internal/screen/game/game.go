@@ -316,8 +316,15 @@ func (m *Model) renderGame() string {
 		m.toast.visible = false
 	}
 
+	toastHeight := lipgloss.Height(m.renderToast())
+	bodyHeight -= toastHeight
+
 	body := lipgloss.JoinHorizontal(lipgloss.Top, boardStr, "  ", sidebar)
 	body = lipgloss.NewStyle().Height(bodyHeight).Render(body)
+
+	if toast == "" {
+		toast = lipgloss.NewStyle().Height(toastHeight).Render("")
+	}
 
 	result := lipgloss.JoinVertical(lipgloss.Left, header, body, toast, footer)
 	return result
@@ -341,7 +348,7 @@ func (m *Model) renderSolved() string {
 	)
 
 	btn := th.Victory.Button.Render("[ PRESS ENTER ]")
-	secondary := th.Victory.ButtonSecondary.Render("Return to Menu (Esc)")
+	secondary := th.Victory.ButtonSecondary.Render("Return to Menu (Esc/q)")
 
 	modalContent := lipgloss.JoinVertical(lipgloss.Center,
 		"",
@@ -372,12 +379,12 @@ func (m *Model) renderHeader() string {
 func (m *Model) renderFooter() string {
 	th := m.theme
 	hints := []string{
-		th.Footer.KeyHint.Render("hjkl") + th.Footer.KeyLabel.Render(" Move"),
+		th.Footer.KeyHint.Render("wasd") + th.Footer.KeyLabel.Render(" Move"),
 		th.Footer.KeyHint.Render("1-9") + th.Footer.KeyLabel.Render(" Digit"),
 		th.Footer.KeyHint.Render("n") + th.Footer.KeyLabel.Render(" Mode"),
 		th.Footer.KeyHint.Render("x") + th.Footer.KeyLabel.Render(" Erase"),
 		th.Footer.KeyHint.Render("u") + th.Footer.KeyLabel.Render(" Undo"),
-		th.Footer.KeyHint.Render("Esc") + th.Footer.KeyLabel.Render(" Menu"),
+		th.Footer.KeyHint.Render("Esc/q") + th.Footer.KeyLabel.Render(" Menu"),
 	}
 	return th.Footer.Bar.Width(m.width).Render("  " + strings.Join(hints, "   "))
 }

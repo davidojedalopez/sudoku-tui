@@ -48,18 +48,18 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "esc":
+		case "esc", "q":
 			return m, func() tea.Msg { return msgs.NavigateMsg{To: msgs.ScreenMenu} }
 		case "tab":
 			m.cycleFilter()
-		case "up", "k":
+		case "up", "w":
 			if m.cursor > 0 {
 				m.cursor--
 				if m.cursor < m.scrollOffset {
 					m.scrollOffset = m.cursor
 				}
 			}
-		case "down", "j":
+		case "down", "s":
 			filtered := m.filteredAndSorted()
 			if m.cursor < len(filtered)-1 {
 				m.cursor++
@@ -225,11 +225,11 @@ func (m *Model) View() string {
 
 	filterBar := m.renderFilterBar()
 
-	hints := th.Footer.KeyHint.Render("j/k") + th.Footer.KeyLabel.Render(" Scroll") +
+	hints := th.Footer.KeyHint.Render("w/s") + th.Footer.KeyLabel.Render(" Scroll") +
 		"   " + th.Footer.KeyHint.Render("PgDn/PgUp") + th.Footer.KeyLabel.Render(" Page") +
 		"   " + th.Footer.KeyHint.Render("Tab") + th.Footer.KeyLabel.Render(" Filter") +
 		"   " + th.Footer.KeyHint.Render("Enter") + th.Footer.KeyLabel.Render(" Load") +
-		"   " + th.Footer.KeyHint.Render("Esc") + th.Footer.KeyLabel.Render(" Back")
+		"   " + th.Footer.KeyHint.Render("Esc/q") + th.Footer.KeyLabel.Render(" Back")
 	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
 
 	filterBarHeight := lipgloss.Height(filterBar)

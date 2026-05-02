@@ -141,17 +141,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) handleMenuKey(msg tea.KeyMsg) tea.Cmd {
 	switch msg.String() {
-	case "up", "k":
+	case "up", "w":
 		if m.cursor > 0 {
 			m.cursor--
 		}
-	case "down", "j":
+	case "down", "s":
 		if m.cursor < m.maxCursor() {
 			m.cursor++
 		}
 	case "enter", " ":
 		return m.activateItem(m.cursor)
-	case "q", "ctrl+c":
+	case "q", "esc", "ctrl+c":
 		return tea.Quit
 	}
 	return nil
@@ -187,11 +187,11 @@ type generateMsg struct {
 
 func (m *Model) handleDiffKey(msg tea.KeyMsg) tea.Cmd {
 	switch msg.String() {
-	case "up", "k":
+	case "up", "w":
 		if m.diffCursor > 0 {
 			m.diffCursor--
 		}
-	case "down", "j":
+	case "down", "s":
 		if m.diffCursor < len(diffItems)-1 {
 			m.diffCursor++
 		}
@@ -200,7 +200,7 @@ func (m *Model) handleDiffKey(msg tea.KeyMsg) tea.Cmd {
 		m.generating = true
 		m.showDiff = false
 		return func() tea.Msg { return generateMsg{diff: diff} }
-	case "esc":
+	case "esc", "q":
 		m.showDiff = false
 	}
 	return nil
@@ -208,11 +208,11 @@ func (m *Model) handleDiffKey(msg tea.KeyMsg) tea.Cmd {
 
 func (m *Model) handleThemeKey(msg tea.KeyMsg) tea.Cmd {
 	switch msg.String() {
-	case "up", "k":
+	case "up", "w":
 		if m.themeCursor > 0 {
 			m.themeCursor--
 		}
-	case "down", "j":
+	case "down", "s":
 		if m.themeCursor < len(themeItems)-1 {
 			m.themeCursor++
 		}
@@ -220,7 +220,7 @@ func (m *Model) handleThemeKey(msg tea.KeyMsg) tea.Cmd {
 		selected := themeItems[m.themeCursor].key
 		m.showTheme = false
 		return func() tea.Msg { return msgs.ChangeThemeMsg{ThemeName: selected} }
-	case "esc":
+	case "esc", "q":
 		m.showTheme = false
 	}
 	return nil
@@ -265,9 +265,9 @@ func (m *Model) View() string {
 	body := lipgloss.JoinVertical(lipgloss.Center, logo, "", subtitle, "", "", menuStr)
 	centeredBody := lipgloss.Place(m.width, m.height-2, lipgloss.Center, lipgloss.Center, body)
 
-	hints := th.Footer.KeyHint.Render("k/j") + th.Footer.KeyLabel.Render(" Navigate") +
+	hints := th.Footer.KeyHint.Render("w/s") + th.Footer.KeyLabel.Render(" Navigate") +
 		"   " + th.Footer.KeyHint.Render("Enter") + th.Footer.KeyLabel.Render(" Select") +
-		"   " + th.Footer.KeyHint.Render("q") + th.Footer.KeyLabel.Render(" Quit")
+		"   " + th.Footer.KeyHint.Render("Esc/q") + th.Footer.KeyLabel.Render(" Quit")
 	footer := th.Footer.Bar.Width(m.width).Render("  " + hints)
 
 	result := centeredBody + "\n" + footer
@@ -315,8 +315,8 @@ func (m *Model) renderDiffModal() string {
 	desc := th.Diff.Desc.Width(35).Render(th.Diff.DescIcon.Render("i") + " " + diffItems[m.diffCursor].desc)
 	lines = append(lines, desc)
 	lines = append(lines, "")
-	hints := th.Footer.KeyHint.Render("k") + " UP  " + th.Footer.KeyHint.Render("j") + " DOWN  " +
-		th.Footer.KeyHint.Render("Esc") + " BACK  " + th.Footer.KeyHint.Render("Enter") + " SELECT"
+	hints := th.Footer.KeyHint.Render("w") + " UP  " + th.Footer.KeyHint.Render("s") + " DOWN  " +
+		th.Footer.KeyHint.Render("Esc/q") + " BACK  " + th.Footer.KeyHint.Render("Enter") + " SELECT"
 	lines = append(lines, hints)
 
 	content := strings.Join(lines, "\n")
@@ -349,8 +349,8 @@ func (m *Model) renderThemeModal() string {
 	}
 
 	lines = append(lines, sep)
-	hints := th.Footer.KeyHint.Render("k") + " UP  " + th.Footer.KeyHint.Render("j") + " DOWN  " +
-		th.Footer.KeyHint.Render("Esc") + " BACK  " + th.Footer.KeyHint.Render("Enter") + " SELECT"
+	hints := th.Footer.KeyHint.Render("w") + " UP  " + th.Footer.KeyHint.Render("s") + " DOWN  " +
+		th.Footer.KeyHint.Render("Esc/q") + " BACK  " + th.Footer.KeyHint.Render("Enter") + " SELECT"
 	lines = append(lines, hints)
 
 	content := strings.Join(lines, "\n")

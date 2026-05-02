@@ -40,8 +40,10 @@ type CellStyles struct {
 	User       lipgloss.Style
 	Empty      lipgloss.Style
 	Conflict   lipgloss.Style
-	Highlight  lipgloss.Style
-	Cursor     lipgloss.Style
+	Highlight     lipgloss.Style
+	NoteHighlight lipgloss.Style
+	BandHighlight lipgloss.Style
+	Cursor        lipgloss.Style
 	Notes      lipgloss.Style
 	NotesDigit lipgloss.Style
 }
